@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookFinder - AI-Powered Book Discovery</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">📚 BookFinder</h1>
+            <p class="tagline">Discover books using AI-powered semantic search</p>
+        </header>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="Describe what you're looking for... (e.g., 'coming of age story', 'dystopian future')"
+                    autocomplete="off"
+                />
+                <button id="searchButton" class="search-button">
+                    <span id="buttonText">Search Books</span>
+                    <span id="buttonLoader" class="loader" style="display: none;"></span>
+                </button>
+            </div>
+
+            <!-- Search Examples -->
+            <div class="search-examples">
+                <p class="examples-label">Try these examples:</p>
+                <div class="example-chips">
+                    <button class="chip" data-query="coming of age story">Coming of age story</button>
+                    <button class="chip" data-query="dystopian future with rebellion">Dystopian future</button>
+                    <button class="chip" data-query="adventure in a magical world">Magical adventure</button>
+                    <button class="chip" data-query="romance set in Victorian England">Victorian romance</button>
+                    <button class="chip" data-query="philosophical exploration of morality">Philosophy & morality</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="results-section" style="display: none;">
+            <div class="results-header">
+                <h2 id="resultsTitle">Search Results</h2>
+                <p id="resultsCount" class="results-count"></p>
+            </div>
+            <div id="resultsContainer" class="results-container"></div>
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="no-results" style="display: none;">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="40" stroke="#e0e0e0" stroke-width="4"/>
+                <path d="M50 30V50L65 65" stroke="#e0e0e0" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+            <h3>No books found</h3>
+            <p>Try adjusting your search query or exploring different keywords.</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span id="errorText"></span>
+        </div>
+
+        <!-- Footer Stats -->
+        <div class="footer-stats">
+            <div class="stat-item">
+                <span class="stat-value" id="totalBooks">-</span>
+                <span class="stat-label">Total Books</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="embeddingsCount">-</span>
+                <span class="stat-label">With Embeddings</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="coveragePercent">-</span>
+                <span class="stat-label">Coverage</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>

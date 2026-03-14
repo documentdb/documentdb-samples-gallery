@@ -1,0 +1,106 @@
+[
+  {
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "description": "Set in the racially tense Depression-era South, young Scout Finch watches her father, lawyer Atticus, defend a Black man falsely accused of rape against a prejudiced town. Through her innocent eyes, the story delves into moral growth, empathy, and the sins of racism, with the reclusive Boo Radley adding layers of compassion and misunderstanding. It remains a cornerstone of American literature for its poignant critique of injustice and celebration of human decency.",
+    "genre": "Fiction",
+    "publishYear": 1960,
+    "language": "English"
+  },
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "description": "In a terrifying dystopian future, the totalitarian regime of Oceania, led by the enigmatic Big Brother, employs constant surveillance, historical revisionism, and the suppression of independent thought to control the populace. Winston Smith, a low-ranking member of the Party, begins a secret rebellion by keeping a diary and falling in love, only to face the brutal reality of the Thought Police. The novel is a chilling warning against totalitarianism and the erosion of truth.",
+    "genre": "Dystopian Fiction",
+    "publishYear": 1949,
+    "language": "English"
+  },
+  {
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "description": "Set in the Roaring Twenties, this novel follows the mysterious millionaire Jay Gatsby and his obsessive pursuit of the beautiful former debutante Daisy Buchanan. Through the eyes of narrator Nick Carraway, the story explores themes of decadence, idealism, resistance to change, and the tragic disillusionment of the American Dream. It stands as a cynical yet poignant critique of the Jazz Age's superficiality and moral decay.",
+    "genre": "Classic Fiction",
+    "publishYear": 1925,
+    "language": "English"
+  },
+  {
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "description": "A classic comedy of manners set in Regency England, centering on the spirited and intelligent Elizabeth Bennet and her complicated relationship with the wealthy, aloof Mr. Darcy. As they navigate social standing, family pressure, and the marriage market, both must overcome their initial judgments—her prejudice and his pride—to realize their true feelings. The novel is celebrated for its wit, romantic tension, and social commentary.",
+    "genre": "Romance",
+    "publishYear": 1813,
+    "language": "English"
+  },
+  {
+    "title": "The Catcher in the Rye",
+    "author": "J.D. Salinger",
+    "description": "Narrated by the cynical and alienated teenager Holden Caulfield, this novel follows his two-day wandering through New York City after being expelled from prep school. It is a quintessential exploration of teenage angst, the loss of innocence, and the struggle to find authenticity in a 'phony' adult world. Holden's unique voice and struggle for connection have resonated with generations of readers.",
+    "genre": "Fiction",
+    "publishYear": 1951,
+    "language": "English"
+  },
+  {
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "description": "Bilbo Baggins, a comfort-loving hobbit, is swept away from his quiet life by the wizard Gandalf and a company of thirteen dwarves to reclaim their lost kingdom from the dragon Smaug. This fantasy adventure introduces the world of Middle-earth, exploring themes of courage, friendship, and the discovery of hidden strength. It serves as the prelude to the epic Lord of the Rings saga.",
+    "genre": "Fantasy",
+    "publishYear": 1937,
+    "language": "English"
+  },
+  {
+    "title": "Fahrenheit 451",
+    "author": "Ray Bradbury",
+    "description": "Set in a future society where books are outlawed and 'firemen' burn any that are found, the story follows Guy Montag, a fireman who begins to question his role. As he encounters a free-spirited neighbor and witnesses the emptiness of his conformist world, he embarks on a dangerous journey to preserve knowledge and humanity. The book is a powerful commentary on censorship and the effects of mass media on society.",
+    "genre": "Dystopian Fiction",
+    "publishYear": 1953,
+    "language": "English"
+  },
+  {
+    "title": "The Lord of the Rings",
+    "author": "J.R.R. Tolkien",
+    "description": "An epic high-fantasy saga that follows the quest of the hobbit Frodo Baggins to destroy the One Ring, an artifact of immense power created by the Dark Lord Sauron. Accompanied by a fellowship of men, elves, dwarves, and hobbits, Frodo traverses Middle-earth to save the world from absolute darkness. The trilogy explores deep themes of power, sacrifice, corruption, and the resilience of the small against the mighty.",
+    "genre": "Fantasy",
+    "publishYear": 1954,
+    "language": "English"
+  },
+  {
+    "title": "Jane Eyre",
+    "author": "Charlotte Brontë",
+    "description": "This Gothic bildungsroman tells the story of an orphaned governess, Jane Eyre, who overcomes a harsh childhood to find work at Thornfield Hall. There, she falls in love with her brooding employer, Edward Rochester, but discovers a dark secret hidden within the manor that threatens their happiness. The novel is revolutionary for its intense focus on the moral and spiritual development of its fiercely independent female protagonist.",
+    "genre": "Gothic Fiction",
+    "publishYear": 1847,
+    "language": "English"
+  },
+  {
+    "title": "Animal Farm",
+    "author": "George Orwell",
+    "description": "A satirical allegorical novella that tells the story of a group of farm animals who rebel against their human farmer, hoping to create a society where the animals can be equal, free, and happy. However, the rebellion is betrayed, and the farm ends up in a state as bad as it was before, under the dictatorship of a pig named Napoleon. It serves as a biting critique of the Russian Revolution and the corruption of power.",
+    "genre": "Satire",
+    "publishYear": 1945,
+    "language": "English"
+  },
+  {
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "author": "J.K. Rowling",
+    "description": "The first book in the global phenomenon introduces Harry Potter, an orphan who discovers on his eleventh birthday that he is a wizard. Whisked away to Hogwarts School of Witchcraft and Wizardry, he makes close friends and discovers the truth about his parents' deaths at the hands of the dark wizard Voldemort. It is a story of magic, friendship, and the triumph of love over evil.",
+    "genre": "Fantasy",
+    "publishYear": 1997,
+    "language": "English"
+  },
+  {
+    "title": "Little Women",
+    "author": "Louisa May Alcott",
+    "description": "This semi-autobiographical novel follows the lives of the four March sisters—Meg, Jo, Beth, and Amy—as they grow from childhood to womanhood in Civil War-era New England. Dealing with poverty, societal expectations, and personal ambitions, the sisters rely on their bond and their mother's guidance. It is a timeless coming-of-age story celebrating family, domesticity, and female independence.",
+    "genre": "Fiction",
+    "publishYear": 1868,
+    "language": "English"
+  },
+  {
+    "title": "Brave New World",
+    "author": "Aldous Huxley",
+    "description": "A dystopian novel set in a futuristic World State where citizens are environmentally engineered into an intelligence-based social hierarchy. The society anticipates the developments in reproductive technology, sleep-learning, and psychological manipulation to keep the population docile and 'happy.' The story challenges the idea that stability and comfort are worth the loss of individuality and freedom.",
+    "genre": "Dystopian Fiction",
+    "publishYear": 1932,
+    "language": "English"
+  }
+]
