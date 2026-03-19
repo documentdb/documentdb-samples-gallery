@@ -66,7 +66,57 @@ You can interact via:
 
 ## 1. Spinning Up DocumentDB
 
-### Option A — Fastest: Prebuilt Docker Image with Gateway (Recommended for Development)
+### Option A — Docker Compose (Recommended for Sample Projects)
+
+The cleanest way to run DocumentDB alongside your app in a sample. Create a
+`docker-compose.yml` at the root of your project:
+
+```yaml
+version: "3.8"
+
+services:
+  documentdb:
+    image: ghcr.io/microsoft/documentdb/documentdb-local:latest
+    ports:
+      - "10260:10260"
+    environment:
+      - USERNAME=docdbuser
+      - PASSWORD=Admin100!
+    restart: unless-stopped
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - documentdb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+```
+
+Start everything together:
+
+```bash
+docker compose up -d
+```
+
+Stop and remove containers:
+
+```bash
+docker compose down
+```
+
+If your sample is app-only (DocumentDB runs separately), include just the `documentdb`
+service and omit the `app` service. Your connection string should then point to
+`host.docker.internal:10260` from inside other containers, or `localhost:10260` from
+the host machine.
+
+---
+
+### Option B — Fastest: Prebuilt Docker Image with Gateway (Recommended for Development)
 
 This gives you a full MongoDB-compatible endpoint with no build step.
 
@@ -504,13 +554,24 @@ pg_documentdb_gw/
 
 ### Connecting via Standard MongoDB Driver (Node.js)
 
+The full connection string must include `tls`, `tlsAllowInvalidCertificates`, and
+`authMechanism=SCRAM-SHA-256`. The bare `mongodb://localhost:10260` form will fail
+authentication against the DocumentDB Gateway in practice.
+
 ```javascript
 const { MongoClient } = require('mongodb');
 
+// Option A — connection string (recommended: all params in one place)
+const client = new MongoClient(
+  'mongodb://myuser:mypassword@localhost:10260/?tls=true&tlsAllowInvalidCertificates=true&authMechanism=SCRAM-SHA-256'
+);
+
+// Option B — options object
 const client = new MongoClient('mongodb://localhost:10260', {
   auth: { username: 'myuser', password: 'mypassword' },
   tls: true,
-  tlsAllowInvalidCertificates: true, // dev only
+  tlsAllowInvalidCertificates: true, // dev only — use a valid cert in production
+  authMechanism: 'SCRAM-SHA-256',
 });
 
 await client.connect();
@@ -536,11 +597,7 @@ await users.deleteOne({ name: 'Alice' });
 from pymongo import MongoClient
 
 client = MongoClient(
-    'mongodb://localhost:10260',
-    username='myuser',
-    password='mypassword',
-    tls=True,
-    tlsAllowInvalidCertificates=True  # dev only
+    'mongodb://myuser:mypassword@localhost:10260/?tls=true&tlsAllowInvalidCertificates=true&authMechanism=SCRAM-SHA-256'
 )
 
 db = client['mydb']
@@ -595,7 +652,7 @@ SELECT * FROM documentdb_api.create_indexes_background(
       "name": "idx_vector",
       "cosmosSearchOptions": {
         "kind": "vector-ivf",
-        "numLists": 100,
+        "numLists": 1,
         "similarity": "COS",
         "dimensions": 1536
       }
@@ -606,6 +663,87 @@ SELECT * FROM documentdb_api.create_indexes_background(
 
 LangChain and Semantic Kernel both support MongoDB-compatible vector stores and work
 with DocumentDB through the Gateway without code changes.
+
+### Similarity metrics — `COS`, `L2`, `IP`
+
+Set via the `similarity` field in `cosmosSearchOptions`. Choose based on how your
+embedding model was trained:
+
+| Metric | Value | When to use |
+|---|---|---|
+| Cosine similarity | `COS` | Default choice for most text and multimodal embeddings. Measures the angle between vectors, ignoring magnitude. Use when vectors may not be normalised. |
+| Euclidean distance | `L2` | Use when absolute distance in vector space matters — e.g. image embeddings or models explicitly trained with L2 loss. |
+| Inner product | `IP` | Use only when vectors are already unit-normalised (magnitude = 1). Equivalent to cosine in that case but faster. Incorrect results if vectors are not normalised. |
+
+When in doubt, use `COS`. Most popular embedding models (`nomic-embed-text`,
+`text-embedding-ada-002`, `mxbai-embed-large`) are trained for cosine similarity.
+
+### `numLists` tuning for `vector-ivf`
+
+`numLists` controls how many inverted index partitions IVF builds. The rule of thumb
+is `sqrt(n)` where `n` is the number of documents in the collection.
+
+| Dataset size | Recommended `numLists` |
+|---|---|
+| < 100 documents | `1` |
+| ~1 000 documents | `32` |
+| ~10 000 documents | `100` |
+| ~100 000 documents | `316` |
+| ~1 000 000 documents | `1000` |
+
+Setting `numLists` too high relative to the dataset size **degrades recall** — the
+query probes too few documents per list and misses neighbours. Setting it too low
+reduces the benefit of the index. For development and small samples, always start
+with `numLists: 1`.
+
+### Querying the vector index — `$search` aggregation (MongoDB driver)
+
+Use the `$search` aggregation stage with `cosmosSearch` to run a vector similarity query.
+`returnStoredSource: true` is **required** — without it the stage does not return the
+source document fields, only internal metadata.
+
+```javascript
+const pipeline = [
+  {
+    $search: {
+      cosmosSearch: {
+        vector: queryEmbedding,   // number[] matching the index dimensions
+        path: 'embedding',        // field that holds the stored vector
+        k: 5,                     // number of nearest neighbours to return
+      },
+      returnStoredSource: true,   // REQUIRED — returns the full source document
+    },
+  },
+  // Split into two stages — see projection gotcha below
+  { $addFields: { similarityScore: { $meta: 'searchScore' } } },
+  { $project: { embedding: 0 } },
+];
+
+const results = await collection.aggregate(pipeline).toArray();
+```
+
+### Projection gotcha — never mix inclusion and exclusion in one `$project`
+
+DocumentDB does **not** allow a single `$project` stage to contain both an inclusion
+(e.g. adding a computed field) and an exclusion (e.g. `embedding: 0`).
+
+**This will throw** `Cannot do exclusion on field embedding in inclusion projection`:
+
+```javascript
+// ❌ WRONG — mixes inclusion ({ $meta: ... }) and exclusion (0) in one stage
+{ $project: { similarityScore: { $meta: 'searchScore' }, embedding: 0 } }
+```
+
+**Fix — use two separate stages:**
+
+```javascript
+// ✅ CORRECT
+{ $addFields: { similarityScore: { $meta: 'searchScore' } } },  // add the score
+{ $project: { embedding: 0 } },                                  // then exclude
+```
+
+This pattern applies any time you need both a computed/meta field and an excluded field
+in the same aggregation result.
 
 ---
 
