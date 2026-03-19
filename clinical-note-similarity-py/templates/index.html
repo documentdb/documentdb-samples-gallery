@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinical Note Similarity Explorer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Clinical Note Similarity Explorer</h1>
+      <p class="subtitle">Find similar cases using natural language — powered by DocumentDB vector search</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="disclaimer">
+      <strong>Sample Data Only</strong> — All clinical notes are fictional and de-identified. This tool is for demonstration purposes only and is not intended for use with real patient data.
+    </div>
+
+    <section class="search-section">
+      <form method="POST" action="/search" class="search-form">
+        <div class="query-row">
+          <textarea
+            name="query"
+            class="query-input"
+            placeholder="e.g. patient with chest pain radiating to the left arm and ST elevation on ECG, diaphoresis and shortness of breath"
+            rows="3"
+          >{{ query or '' }}</textarea>
+        </div>
+        <div class="filter-row">
+          <label>
+            Specialty:
+            <select name="specialty" class="filter-select">
+              <option value="all" {% if (specialty or 'all') == 'all' %}selected{% endif %}>All Specialties</option>
+              {% for sp in specialties %}
+              <option value="{{ sp }}" {% if specialty == sp %}selected{% endif %}>{{ sp }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>
+            Results:
+            <select name="num_results" class="filter-select">
+              {% for n in [3, 5, 10] %}
+              <option value="{{ n }}" {% if (num_results or 5) == n %}selected{% endif %}>{{ n }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <button type="submit" class="search-btn">Find Similar Cases</button>
+        </div>
+      </form>
+    </section>
+
+    {% if error %}
+    <div class="error-banner">
+      <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    {% if query %}
+    <section class="results-section">
+      <p class="results-meta">
+        {% if results %}
+          <strong>{{ results | length }}</strong> similar case{% if results | length != 1 %}s{% endif %} found
+          {% if specialty and specialty != 'all' %}in <strong>{{ specialty }}</strong>{% endif %}
+          for <em>"{{ query[:80] }}{% if query | length > 80 %}…{% endif %}"</em>
+        {% else %}
+          No similar cases found. Try broadening your query or specialty filter.
+        {% endif %}
+      </p>
+
+      {% for note in results %}
+      <div class="result-card">
+        <div class="card-header">
+          <div class="card-title-row">
+            <span class="note-id">{{ note.note_id }}</span>
+            <span class="specialty-badge specialty-{{ note.specialty | lower | replace(' ', '-') }}">
+              {{ note.specialty }}
+            </span>
+          </div>
+          <div class="diagnosis">{{ note.diagnosis }}</div>
+        </div>
+
+        <div class="card-meta">
+          <span>Age group: <strong>{{ note.age_group }}</strong></span>
+          <span class="dot">·</span>
+          <span>Sex: <strong>{{ note.sex }}</strong></span>
+          <span class="dot">·</span>
+          <span>ICD: <strong>{{ note.icd_code }}</strong></span>
+          <span class="dot">·</span>
+          <span class="outcome outcome-{{ note.outcome }}">{{ note.outcome }}</span>
+        </div>
+
+        <p class="chief-complaint"><em>Chief complaint:</em> {{ note.chief_complaint }}</p>
+
+        <p class="note-excerpt">
+          {{ note.clinical_note[:260] }}{% if note.clinical_note | length > 260 %}…{% endif %}
+        </p>
+
+        <div class="card-footer">
+          <div class="score-row">
+            <span class="score-label">Similarity</span>
+            <div class="score-bar-bg">
+              <div class="score-bar" style="width: {{ (note.similarityScore * 100) | round(1) }}%"
+                   data-score="{{ note.similarityScore }}"></div>
+            </div>
+            <span class="score-pct">{{ (note.similarityScore * 100) | round(1) }}%</span>
+          </div>
+          <a href="/note/{{ note.note_id }}" class="detail-link">View full note →</a>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+    {% else %}
+    <div class="example-queries">
+      <h3>Example queries to try</h3>
+      <ul>
+        <li>Sudden chest pain radiating to the left arm with diaphoresis</li>
+        <li>Patient with wheezing, dyspnea not responding to bronchodilators</li>
+        <li>Sudden onset facial droop and arm weakness with speech difficulty</li>
+        <li>Abdominal pain migrating to right lower quadrant with fever and nausea</li>
+        <li>Fatigue, weight gain, cold intolerance and hair loss</li>
+        <li>Knee injury after pivoting with felt pop and subsequent swelling</li>
+      </ul>
+    </div>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>Built with <a href="https://github.com/microsoft/documentdb" target="_blank">DocumentDB OSS</a> · Embeddings by <a href="https://ollama.com" target="_blank">Ollama</a> · Sample data only — not for clinical use</p>
+  </footer>
+</body>
+</html>

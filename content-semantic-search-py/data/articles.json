@@ -1,0 +1,137 @@
+[
+  {
+    "article_id": "ART001",
+    "title": "Understanding Transformer Architecture in Modern NLP",
+    "content": "The transformer architecture, introduced in the landmark 'Attention Is All You Need' paper, revolutionized natural language processing by replacing recurrent networks with self-attention mechanisms. Unlike RNNs that process tokens sequentially, transformers process entire sequences in parallel, enabling massive parallelization during training. The multi-head attention mechanism allows the model to jointly attend to information from different representation subspaces, capturing both local and global dependencies in text. Today, transformer-based models like BERT, GPT, and T5 form the backbone of virtually every state-of-the-art NLP system.",
+    "type": "article",
+    "tags": ["machine learning", "NLP", "transformers", "deep learning", "AI"],
+    "author": "Dr. Sarah Chen",
+    "date": "2024-03-15"
+  },
+  {
+    "article_id": "ART002",
+    "title": "Rising Sea Levels: Coastal Cities at Risk by 2050",
+    "content": "Climate scientists project that global mean sea levels could rise between 0.3 and 1.0 meters by 2100 under moderate emissions scenarios, threatening hundreds of millions of people living in low-lying coastal regions. Cities like Miami, Jakarta, and Mumbai face the most acute risks, with some areas projected to experience permanent inundation within decades. The combination of thermal expansion of ocean water and accelerating ice sheet melt in Greenland and Antarctica is driving these projections. Adaptive infrastructure investment, managed retreat strategies, and aggressive emissions reduction are all being evaluated as potential responses.",
+    "type": "article",
+    "tags": ["climate change", "sea level rise", "coastal cities", "environment", "adaptation"],
+    "author": "Prof. James Okafor",
+    "date": "2024-01-22"
+  },
+  {
+    "article_id": "ART003",
+    "title": "Quantum Computing: When Will It Beat Classical Machines?",
+    "content": "Quantum computers leverage quantum mechanical phenomena — superposition and entanglement — to perform certain computations exponentially faster than classical computers. While Google's Sycamore processor claimed quantum supremacy in 2019 on a narrow benchmark, practical quantum advantage for real-world problems like drug discovery or cryptography remains elusive. Current NISQ-era devices suffer from high error rates, short coherence times, and limited qubit connectivity. Most researchers believe fault-tolerant quantum computing capable of beating classical machines on commercially relevant problems is still 10-15 years away.",
+    "type": "article",
+    "tags": ["quantum computing", "qubits", "quantum supremacy", "technology", "physics"],
+    "author": "Dr. Elena Vasquez",
+    "date": "2024-02-08"
+  },
+  {
+    "article_id": "ART004",
+    "title": "The Mediterranean Diet and Cardiovascular Health: What the Evidence Shows",
+    "content": "Decades of epidemiological research and randomized controlled trials have consistently linked adherence to a Mediterranean diet with significantly reduced risk of cardiovascular disease, stroke, and all-cause mortality. The diet, rich in olive oil, fish, legumes, whole grains, and fresh vegetables, appears to reduce LDL cholesterol and systemic inflammation through multiple mechanisms. The landmark PREDIMED trial demonstrated a 30% reduction in major cardiovascular events among high-risk adults following a Mediterranean diet supplemented with extra-virgin olive oil or mixed nuts. Researchers attribute much of the benefit to polyphenols, omega-3 fatty acids, and fiber working synergistically.",
+    "type": "research",
+    "tags": ["nutrition", "cardiovascular health", "Mediterranean diet", "clinical research", "wellness"],
+    "author": "Dr. Amara Diallo",
+    "date": "2023-11-14"
+  },
+  {
+    "article_id": "ART005",
+    "title": "15-Minute Cities: Rethinking Urban Design Around Human Scale",
+    "content": "The 15-minute city concept, popularized by urban planner Carlos Moreno and adopted in Paris and other European cities, proposes that every resident should be able to reach work, school, healthcare, groceries, and recreation within a 15-minute walk or bike ride from home. This framework challenges decades of car-centric suburban planning by prioritizing mixed-use zoning, active transportation infrastructure, and neighborhood-level amenities. Pilot implementations in Paris, Melbourne, and Portland show early evidence of reduced car trips and improved resident well-being. Critics argue the model is more achievable in dense European cities than in sprawling North American suburbs.",
+    "type": "article",
+    "tags": ["urban planning", "15-minute city", "sustainability", "transportation", "walkability"],
+    "author": "Maria Santos",
+    "date": "2024-04-03"
+  },
+  {
+    "article_id": "ART006",
+    "title": "Zero-Day Exploits: How Nation-State Hackers Find and Weaponize Vulnerabilities",
+    "content": "Zero-day vulnerabilities are software flaws unknown to the vendor, making them uniquely dangerous because no patch exists at the time of exploitation. Nation-state threat actors, particularly those affiliated with Russia, China, North Korea, and Iran, invest heavily in zero-day research and acquisition through gray-market brokers where a single critical vulnerability in enterprise software can sell for millions of dollars. The Stuxnet worm, which used four simultaneous zero-days to damage Iranian nuclear centrifuges, remains the canonical example of a weaponized zero-day campaign. Defenders increasingly rely on behavioral detection, memory-safe languages, and rapid patch cycles rather than signature-based tools to mitigate zero-day risk.",
+    "type": "article",
+    "tags": ["cybersecurity", "zero-day", "nation-state", "vulnerabilities", "threat intelligence"],
+    "author": "Alex Kim",
+    "date": "2024-03-30"
+  },
+  {
+    "article_id": "ART007",
+    "title": "The Lost City of Pompeii: New Excavations Reveal Everyday Roman Life",
+    "content": "Ongoing excavations in the Regio IX district of Pompeii continue to astonish archaeologists with their extraordinary preservation of first-century Roman daily life, frozen by the 79 AD eruption of Mount Vesuvius. Recent discoveries include a fast-food thermopolium with intact frescoes depicting the dishes served, a bakery with millstones still loaded with grain, and skeletal remains of slaves revealing evidence of hard physical labor through bone analysis. Advanced photogrammetry and ground-penetrating radar are allowing researchers to map unexcavated sections of the city before disturbing the soil. Each new excavation season rewrites what historians understand about Roman urban life, social hierarchies, and cuisine.",
+    "type": "article",
+    "tags": ["history", "archaeology", "Roman history", "Pompeii", "ancient civilization"],
+    "author": "Dr. Lucia Ferretti",
+    "date": "2023-09-18"
+  },
+  {
+    "article_id": "ART008",
+    "title": "Solar Power Economics: Why Utility-Scale Costs Have Dropped 90% in a Decade",
+    "content": "The levelized cost of utility-scale solar photovoltaic electricity has fallen from roughly $0.28 per kilowatt-hour in 2010 to under $0.03 in many markets by 2023, a decline driven by manufacturing scale, panel efficiency improvements, and competitive procurement. China's dominance in polysilicon and module manufacturing has created a global supply chain capable of producing terawatts of capacity annually at costs unimaginable a decade ago. Auctions in the Middle East, India, and Chile have repeatedly set record-low prices, with some contracts below $0.02/kWh. The remaining barriers to full solar deployment are now primarily grid integration, storage economics, and land use permitting rather than generation costs.",
+    "type": "research",
+    "tags": ["renewable energy", "solar power", "energy economics", "clean energy", "climate"],
+    "author": "Dr. Fatima Al-Rashid",
+    "date": "2024-01-05"
+  },
+  {
+    "article_id": "ART009",
+    "title": "Neuroplasticity: How the Adult Brain Continues to Change Throughout Life",
+    "content": "The long-held belief that the adult brain is fixed and immutable has been overturned by decades of neuroscience research demonstrating remarkable plasticity throughout the lifespan. Structural MRI studies show that learning new skills — from juggling to musical instruments to second languages — produces measurable increases in gray matter density in relevant cortical areas. Aerobic exercise promotes neurogenesis in the hippocampus, the brain region critical for memory consolidation, even in adults over 70. Cognitive rehabilitation after stroke leverages neuroplasticity by training surviving neural circuits to compensate for damaged regions. Understanding these mechanisms has profound implications for education, mental health treatment, and aging.",
+    "type": "research",
+    "tags": ["neuroscience", "neuroplasticity", "brain health", "learning", "cognitive science"],
+    "author": "Dr. Marcus Webb",
+    "date": "2023-12-02"
+  },
+  {
+    "article_id": "ART010",
+    "title": "The James Webb Space Telescope's First Year: What We've Learned",
+    "content": "After more than a decade of development and a nail-biting launch in December 2021, the James Webb Space Telescope has transformed observational astronomy in its first years of operation. Its infrared sensitivity allows it to peer through dust clouds opaque to Hubble, revealing stellar nurseries and the earliest galaxies that formed within 400 million years of the Big Bang. JWST has detected carbon dioxide in the atmosphere of exoplanet WASP-39b, demonstrating its power for atmospheric characterization of worlds beyond our solar system. Its observations of Uranus revealed unexpected ring structure detail, while its deep field images captured thousands of galaxies in a patch of sky smaller than a grain of sand held at arm's length.",
+    "type": "article",
+    "tags": ["space", "James Webb Telescope", "astronomy", "exoplanets", "cosmology"],
+    "author": "Dr. Priya Nair",
+    "date": "2024-02-20"
+  },
+  {
+    "article_id": "ART011",
+    "title": "The Loneliness Epidemic and Its Physical Health Consequences",
+    "content": "The US Surgeon General's 2023 advisory declared loneliness a public health epidemic, citing research showing that social isolation carries mortality risks equivalent to smoking 15 cigarettes per day. Loneliness activates the body's stress response system, elevating cortisol and inflammatory markers that over time damage cardiovascular, immune, and neurological systems. The rise of remote work, social media as a substitute for in-person connection, and the weakening of community institutions have all been cited as structural drivers of the epidemic. Researchers are now testing scalable interventions including volunteer programs, befriending services, and social prescribing in primary care settings.",
+    "type": "article",
+    "tags": ["mental health", "loneliness", "public health", "social connection", "wellbeing"],
+    "author": "Dr. Isabelle Moreau",
+    "date": "2024-04-11"
+  },
+  {
+    "article_id": "ART012",
+    "title": "Blockchain Beyond Cryptocurrency: Real-World Enterprise Applications",
+    "content": "While public blockchains like Bitcoin and Ethereum are synonymous with cryptocurrency speculation, permissioned blockchain networks are finding quiet but substantial adoption in supply chain provenance, healthcare data exchange, and trade finance. Walmart and IBM's Food Trust network uses blockchain to trace the provenance of food products from farm to shelf, reducing the time to trace a contamination source from days to seconds. The pharmaceutical industry uses blockchain-based serialization to combat counterfeit drug supply chains, with DSCSA compliance in the US driving adoption. In trade finance, digital letters of credit on blockchain platforms like Marco Polo and Contour have reduced settlement times from weeks to hours for participating banks.",
+    "type": "blog",
+    "tags": ["blockchain", "supply chain", "enterprise technology", "fintech", "distributed systems"],
+    "author": "Rajesh Patel",
+    "date": "2023-10-25"
+  },
+  {
+    "article_id": "ART013",
+    "title": "CRISPR Gene Editing: From Lab Curiosity to Approved Medicine",
+    "content": "A decade after Jennifer Doudna and Emmanuelle Charpentier's Nobel Prize-winning discovery of CRISPR-Cas9 as a programmable gene editing tool, the technology has moved from academic curiosity to approved medicine. In late 2023, the FDA approved the first CRISPR-based therapy — Casgevy — for sickle cell disease, offering a potential functional cure for patients who previously faced a lifetime of debilitating pain crises. Beyond inherited blood disorders, CRISPR is being investigated for solid tumors, HIV, high cholesterol, and inherited blindness. The main challenges ahead are delivery to target tissues, off-target editing risks, and equitable access given current manufacturing costs exceeding $2 million per patient.",
+    "type": "article",
+    "tags": ["genomics", "CRISPR", "gene editing", "medicine", "biotechnology"],
+    "author": "Dr. Hannah Brooks",
+    "date": "2024-03-05"
+  },
+  {
+    "article_id": "ART014",
+    "title": "Smart Cities and the Sensor Grid: Privacy vs. Efficiency Trade-offs",
+    "content": "Modern smart city deployments embed thousands of sensors — traffic cameras, air quality monitors, acoustic sensors, and pedestrian counters — into urban infrastructure to optimize traffic flow, reduce energy consumption, and improve emergency response times. Singapore, Amsterdam, and Columbus Ohio have implemented city-scale sensor platforms with measurable improvements in traffic congestion and energy use. However, civil liberties advocates warn that the same sensor infrastructure capable of counting pedestrians can also track individuals, creating pervasive surveillance infrastructure with limited democratic oversight. The line between smart city optimization and population surveillance is increasingly contested, particularly as facial recognition capabilities are integrated into existing camera networks.",
+    "type": "blog",
+    "tags": ["smart cities", "IoT", "privacy", "urban technology", "surveillance"],
+    "author": "Thomas Nguyen",
+    "date": "2023-08-14"
+  },
+  {
+    "article_id": "ART015",
+    "title": "Generative AI in Creative Industries: Tools, Disruption, and New Workflows",
+    "content": "Image generation models like Midjourney and DALL-E 3, music generation systems like Suno, and code generation tools like GitHub Copilot are reshaping creative and knowledge work workflows across industries. Professional illustrators, musicians, and developers report using these tools to accelerate early-stage ideation, prototype concepts, and handle repetitive production tasks — while using their own expertise to direct and refine outputs. The most significant labor market disruptions appear concentrated in entry-level creative roles: stock photography, basic illustration, and routine code generation. Copyright and attribution remain unresolved legal questions, with multiple class-action lawsuits challenging whether training on copyrighted material without permission constitutes infringement.",
+    "type": "blog",
+    "tags": ["generative AI", "creative industries", "AI art", "digital art", "future of work"],
+    "author": "Chloe Anderson",
+    "date": "2024-05-01"
+  }
+]

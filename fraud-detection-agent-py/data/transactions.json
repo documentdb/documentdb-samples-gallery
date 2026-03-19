@@ -1,0 +1,202 @@
+[
+  {
+    "transaction_id": "TX001",
+    "description": "Regular weekly groceries purchased at local supermarket near registered home address",
+    "amount": 127.43,
+    "merchant": "Whole Foods Market",
+    "category": "Groceries",
+    "location": "Austin, TX",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX002",
+    "description": "Monthly gym membership auto-renewal charged to card on file as usual",
+    "amount": 49.99,
+    "merchant": "Planet Fitness",
+    "category": "Health & Fitness",
+    "location": "Chicago, IL",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX003",
+    "description": "Morning coffee and pastry at neighborhood coffee shop visited regularly on weekdays",
+    "amount": 6.75,
+    "merchant": "Blue Bottle Coffee",
+    "category": "Dining",
+    "location": "Brooklyn, NY",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX004",
+    "description": "Gas station fill-up at familiar station near home, normal volume for vehicle type",
+    "amount": 58.20,
+    "merchant": "Shell Gas Station",
+    "category": "Gas & Fuel",
+    "location": "Dallas, TX",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX005",
+    "description": "Dinner at local Italian restaurant with family on a Friday evening, tip included",
+    "amount": 94.50,
+    "merchant": "Trattoria Milano",
+    "category": "Dining",
+    "location": "San Francisco, CA",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX006",
+    "description": "Monthly streaming video subscription auto-renewal, same amount every month",
+    "amount": 15.99,
+    "merchant": "Netflix",
+    "category": "Subscriptions",
+    "location": "Online",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX007",
+    "description": "Prescription pickup at local pharmacy, same medications refilled monthly",
+    "amount": 23.40,
+    "merchant": "CVS Pharmacy",
+    "category": "Healthcare",
+    "location": "Seattle, WA",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX008",
+    "description": "Paperback novel purchased at neighborhood bookstore on a Saturday afternoon",
+    "amount": 18.95,
+    "merchant": "Powell's Books",
+    "category": "Books & Entertainment",
+    "location": "Portland, OR",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX009",
+    "description": "Monthly electric utility bill automatic payment, consistent with prior month amounts",
+    "amount": 132.00,
+    "merchant": "Austin Energy",
+    "category": "Utilities",
+    "location": "Austin, TX",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX010",
+    "description": "Automated monthly mortgage payment to known lender, identical amount each month",
+    "amount": 1850.00,
+    "merchant": "Chase Mortgage",
+    "category": "Mortgage",
+    "location": "Online Banking",
+    "is_fraud": false,
+    "fraud_type": null
+  },
+  {
+    "transaction_id": "TX011",
+    "description": "Multiple high-value gift cards purchased across different store locations within 20 minutes, buyer declined store assistance",
+    "amount": 3200.00,
+    "merchant": "Walmart Gift Cards",
+    "category": "Gift Cards",
+    "location": "Online",
+    "is_fraud": true,
+    "fraud_type": "gift_card_fraud"
+  },
+  {
+    "transaction_id": "TX012",
+    "description": "International wire transfer to unknown overseas account in Eastern Europe immediately following suspicious login from foreign IP address",
+    "amount": 9800.00,
+    "merchant": "International Wire Transfer",
+    "category": "Transfer",
+    "location": "International",
+    "is_fraud": true,
+    "fraud_type": "account_takeover"
+  },
+  {
+    "transaction_id": "TX013",
+    "description": "Luxury watch purchase from unverified online vendor, shipping address differs completely from billing address, no prior relationship",
+    "amount": 3750.00,
+    "merchant": "Prestige Timepieces Online",
+    "category": "Luxury Goods",
+    "location": "Online",
+    "is_fraud": true,
+    "fraud_type": "card_not_present"
+  },
+  {
+    "transaction_id": "TX014",
+    "description": "High-end electronics bulk order using newly opened account with unverified identity, expedited shipping to freight forwarder",
+    "amount": 4299.99,
+    "merchant": "TechVault Electronics",
+    "category": "Electronics",
+    "location": "Online",
+    "is_fraud": true,
+    "fraud_type": "synthetic_identity"
+  },
+  {
+    "transaction_id": "TX015",
+    "description": "Large transfer to new payee immediately following unauthorized password reset and email change, account holder unreachable",
+    "amount": 7500.00,
+    "merchant": "Digital Bank Wire",
+    "category": "Transfer",
+    "location": "Online",
+    "is_fraud": true,
+    "fraud_type": "phishing"
+  },
+  {
+    "transaction_id": "TX016",
+    "description": "Duplicate charge appearing at same gas station within 30 minutes, second charge submitted from skimming device after original",
+    "amount": 58.20,
+    "merchant": "QuickFuel Station",
+    "category": "Gas & Fuel",
+    "location": "Houston, TX",
+    "is_fraud": true,
+    "fraud_type": "card_skimming"
+  },
+  {
+    "transaction_id": "TX017",
+    "description": "Customer disputed high-value electronics purchase claiming non-receipt despite confirmed delivery signature on file",
+    "amount": 1289.00,
+    "merchant": "Amazon Marketplace",
+    "category": "Electronics",
+    "location": "Online",
+    "is_fraud": true,
+    "fraud_type": "friendly_fraud"
+  },
+  {
+    "transaction_id": "TX018",
+    "description": "New account opened with slightly altered identity details making immediate bulk fashion purchases before verification completes",
+    "amount": 2100.00,
+    "merchant": "Luxury Fashion Direct",
+    "category": "Apparel",
+    "location": "Miami, FL",
+    "is_fraud": true,
+    "fraud_type": "identity_theft"
+  },
+  {
+    "transaction_id": "TX019",
+    "description": "Corporate vendor invoice payment redirected to attacker bank account following spoofed email impersonating CFO with new wire instructions",
+    "amount": 15000.00,
+    "merchant": "Corporate Vendor Payment",
+    "category": "Business Transfer",
+    "location": "Wire Transfer",
+    "is_fraud": true,
+    "fraud_type": "business_email_compromise"
+  },
+  {
+    "transaction_id": "TX020",
+    "description": "ATM cash withdrawal in foreign country immediately followed by domestic online purchase within same minute, physically impossible",
+    "amount": 600.00,
+    "merchant": "ATM International Withdrawal",
+    "category": "Cash Withdrawal",
+    "location": "Budapest, Hungary",
+    "is_fraud": true,
+    "fraud_type": "atm_skimming"
+  }
+]

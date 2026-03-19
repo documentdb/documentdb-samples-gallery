@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Semantic Search Portal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Content Semantic Search</h1>
+      <p class="subtitle">Search articles, blogs, and research by meaning — powered by DocumentDB vector search</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="search-section">
+      <form method="POST" action="/search" class="search-form">
+        <div class="search-row">
+          <input
+            type="text"
+            name="query"
+            class="search-input"
+            placeholder="e.g. neural networks and attention mechanisms"
+            value="{{ query or '' }}"
+            autofocus
+          />
+          <button type="submit" class="search-btn">Search</button>
+        </div>
+        <div class="filter-row">
+          <label>
+            Type:
+            <select name="content_type" class="filter-select">
+              <option value="all" {% if (content_type or 'all') == 'all' %}selected{% endif %}>All Types</option>
+              {% for ct in content_types %}
+              <option value="{{ ct }}" {% if content_type == ct %}selected{% endif %}>
+                {{ ct | capitalize }}
+              </option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>
+            Results:
+            <select name="num_results" class="filter-select">
+              {% for n in [3, 5, 10] %}
+              <option value="{{ n }}" {% if (num_results or 5) == n %}selected{% endif %}>{{ n }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
+      </form>
+    </section>
+
+    {% if error %}
+    <div class="error-banner">
+      <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    {% if query %}
+    <section class="results-section">
+      <p class="results-meta">
+        {% if results %}
+          Showing <strong>{{ results | length }}</strong> result{% if results | length != 1 %}s{% endif %} for
+          <em>"{{ query }}"</em>
+          {% if content_type and content_type != 'all' %}
+            in <strong>{{ content_type }}</strong>
+          {% endif %}
+        {% else %}
+          No results found for <em>"{{ query }}"</em>
+        {% endif %}
+      </p>
+
+      {% for article in results %}
+      <div class="result-card">
+        <div class="card-header">
+          <a href="/article/{{ article.article_id }}" class="card-title">{{ article.title }}</a>
+          <span class="type-badge type-{{ article.type }}">{{ article.type }}</span>
+        </div>
+
+        <div class="card-meta">
+          <span>{{ article.author }}</span>
+          <span class="dot">·</span>
+          <span>{{ article.date }}</span>
+        </div>
+
+        <p class="card-excerpt">
+          {{ article.content[:220] }}{% if article.content | length > 220 %}…{% endif %}
+        </p>
+
+        {% if article.tags %}
+        <div class="tag-row">
+          {% for tag in article.tags[:5] %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="score-row">
+          <span class="score-label">Similarity</span>
+          <div class="score-bar-bg">
+            <div class="score-bar" style="width: {{ (article.similarityScore * 100) | round(1) }}%"></div>
+          </div>
+          <span class="score-pct">{{ (article.similarityScore * 100) | round(1) }}%</span>
+        </div>
+      </div>
+      {% endfor %}
+
+      {% if not results and not error %}
+      <div class="empty-state">
+        <p>No articles matched your query. Try different keywords or broaden the type filter.</p>
+      </div>
+      {% endif %}
+    </section>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>Built with <a href="https://github.com/microsoft/documentdb" target="_blank">DocumentDB OSS</a> · Vector search powered by <a href="https://ollama.com" target="_blank">Ollama</a></p>
+  </footer>
+</body>
+</html>
