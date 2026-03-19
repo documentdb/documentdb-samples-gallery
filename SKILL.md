@@ -623,6 +623,46 @@ users.update_one({'name': 'Alice'}, {'$set': {'age': 31}})
 users.delete_one({'name': 'Alice'})
 ```
 
+### Python `get_client()` — safe pattern for samples
+
+Always read the connection URI from an environment variable and exit with a clear
+message if it is missing. Only enable `tlsAllowInvalidCertificates` when an explicit
+env flag is set — do not default it to `True`, as that encourages insecure defaults
+if the code is reused against a real deployment.
+
+The connection string itself must always include `tls=true` and
+`tlsAllowInvalidCertificates=true` (for the local container) as query parameters so
+the intent is visible and auditable at the call site.
+
+```python
+import os
+import sys
+from pymongo import MongoClient
+
+
+def get_client() -> MongoClient:
+    uri = os.getenv("DOCUMENTDB_URI")
+    if not uri:
+        sys.exit(
+            "Error: DOCUMENTDB_URI environment variable is not set.\n"
+            "Copy .env.example to .env and fill in your connection string."
+        )
+    # tlsAllowInvalidCertificates is only safe for the local dev container.
+    # Never enable this against a real deployment — use a valid certificate instead.
+    allow_invalid_certs = os.getenv("DOCUMENTDB_ALLOW_INVALID_CERTS", "false").lower() == "true"
+    return MongoClient(uri, tlsAllowInvalidCertificates=allow_invalid_certs)
+```
+
+`.env.example` for the local container (sets the flag explicitly):
+
+```
+DOCUMENTDB_URI=mongodb://<username>:<password>@localhost:10260/?tls=true&tlsAllowInvalidCertificates=true&authMechanism=SCRAM-SHA-256
+DOCUMENTDB_ALLOW_INVALID_CERTS=true
+```
+
+For a real deployment, omit `DOCUMENTDB_ALLOW_INVALID_CERTS` (it defaults to `false`)
+and use a connection string without `tlsAllowInvalidCertificates=true`.
+
 ### Connecting via psql (Direct SQL)
 
 ```bash
