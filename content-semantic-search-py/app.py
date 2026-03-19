@@ -7,6 +7,7 @@ load_dotenv()
 from flask import Flask, render_template, request
 from utils.db import get_client, get_collection
 from utils.embeddings import get_embedding
+import logging
 
 app = Flask(__name__)
 
@@ -97,7 +98,8 @@ def search():
         try:
             results = semantic_search(query, content_type, num_results)
         except Exception as e:
-            error = str(e)
+            logging.exception("Error during semantic search for query %r", query)
+            error = "An error occurred while processing your search. Please try again later."
 
     return render_template(
         "index.html",
