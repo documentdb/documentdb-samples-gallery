@@ -12,7 +12,7 @@ description: >
 
 ## What Is DocumentDB?
 
-DocumentDB is the engine powering vCore-based Azure Cosmos DB for MongoDB. It is a
+DocumentDB is the engine powering [Azure DocumentDB](https://learn.microsoft.com/en-us/azure/documentdb/). It is a
 **fully open-source** (MIT license), document-oriented NoSQL database engine built
 natively on PostgreSQL. It exposes a MongoDB-compatible API while storing BSON documents
 inside a PostgreSQL framework.
