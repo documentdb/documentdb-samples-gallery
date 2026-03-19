@@ -1,32 +1,54 @@
 import 'dotenv/config';
-import { ReActAgent, FunctionTool } from 'llamaindex';
-import { Ollama, OllamaEmbedding } from '@llamaindex/ollama';
+import { createInterface } from 'readline';
+import { Ollama, OllamaEmbedding } from 'llamaindex';
 
 import { createClients } from './utils/clients.js';
 import { DocumentDBVectorStore } from './vector-store.js';
 import {
-  PLANNER_SYSTEM_PROMPT,
   SYNTHESIZER_SYSTEM_PROMPT,
-  TOOL_NAME,
-  TOOL_DESCRIPTION,
   createSynthesizerPrompt,
   formatHotelForSynthesizer,
 } from './utils/prompts.js';
 
 // ---------------------------------------------------------------------------
-// Planner agent
+// User input
+// ---------------------------------------------------------------------------
+
+const SUGGESTIONS = [
+  'Quintessential lodging near running trails, eateries, and retail',
+  'Luxury spa resort with pool and fine dining',
+  'Budget-friendly downtown hotel with good wifi',
+  'Pet-friendly hotel near the beach',
+  'Boutique hotel with rooftop bar and city views',
+];
+
+function promptForQuery(): Promise<string> {
+  return new Promise((resolve) => {
+    console.log('\nExample queries:');
+    SUGGESTIONS.forEach((s, i) => console.log(`  ${i + 1}. ${s}`));
+    console.log();
+
+    const rl = createInterface({ input: process.stdin, output: process.stdout });
+    rl.question('Enter your query (or press Enter to use suggestion 1): ', (answer) => {
+      rl.close();
+      const trimmed = answer.trim();
+      const num = parseInt(trimmed, 10);
+      if (!trimmed) resolve(SUGGESTIONS[0]);
+      else if (num >= 1 && num <= SUGGESTIONS.length) resolve(SUGGESTIONS[num - 1]);
+      else resolve(trimmed);
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Planner — embed query and retrieve top-k hotels from DocumentDB
 // ---------------------------------------------------------------------------
 
 /**
- * Runs the planner agent.
- *
- * Uses ReActAgent so it works with any Ollama model regardless of whether the
- * model supports OpenAI-style function calling. The agent refines the user
- * query and calls the hotel search tool. We capture the raw tool output via
- * a closure variable so the synthesizer gets structured data.
+ * Embeds the user query and runs a vector similarity search against DocumentDB.
+ * Returns the top-k hotel results formatted for the synthesizer.
  */
-async function runPlannerAgent(
-  plannerLlm: Ollama,
+async function runPlanner(
   embedModel: OllamaEmbedding,
   vectorStore: DocumentDBVectorStore,
   userQuery: string,
@@ -34,76 +56,28 @@ async function runPlannerAgent(
 ): Promise<string> {
   console.log('\n--- PLANNER ---');
 
-  let capturedHotelData = '';
+  const queryVector = await embedModel.getTextEmbedding(userQuery);
+  const results = await vectorStore.similaritySearch(queryVector, nearestNeighbors);
 
-  const hotelSearchTool = FunctionTool.from<{
-    query: string;
-    nearestNeighbors?: number;
-  }>(
-    async ({ query, nearestNeighbors: k }) => {
-      const queryVector = await embedModel.getQueryEmbedding(query);
-      const results = await vectorStore.similaritySearch(queryVector, k ?? nearestNeighbors);
-
-      console.log(`Found ${results.length} hotels from vector store`);
-      results.forEach(({ hotel, score }) =>
-        console.log(`  Hotel: ${hotel.HotelName}, Score: ${score.toFixed(4)}`),
-      );
-
-      capturedHotelData = results
-        .map(({ hotel, score }) => formatHotelForSynthesizer(hotel, score))
-        .join('\n\n---\n\n');
-
-      return capturedHotelData;
-    },
-    {
-      name: TOOL_NAME,
-      description: TOOL_DESCRIPTION,
-      parameters: {
-        type: 'object',
-        properties: {
-          query: {
-            type: 'string',
-            description: 'Refined semantic search query for finding hotels',
-          },
-          nearestNeighbors: {
-            type: 'number',
-            description: 'Number of hotels to return (1-20)',
-          },
-        },
-        required: ['query'],
-      },
-    },
+  console.log(`Found ${results.length} hotels from vector store`);
+  results.forEach(({ hotel, score }) =>
+    console.log(`  Hotel: ${hotel.HotelName}, Score: ${score.toFixed(4)}`),
   );
 
-  // ReActAgent works with any LLM via text-based ReAct prompting.
-  // The system prompt is injected as the first message in chatHistory.
-  const agent = new ReActAgent({
-    tools: [hotelSearchTool],
-    llm: plannerLlm,
-    verbose: false,
-    chatHistory: [{ role: 'system', content: PLANNER_SYSTEM_PROMPT }],
-  });
-
-  const userMessage =
-    `Use the "${TOOL_NAME}" tool with nearestNeighbors=${nearestNeighbors} ` +
-    `and query="${userQuery}". Do not answer directly; call the tool.`;
-
-  await agent.chat({ message: userMessage });
-
-  return capturedHotelData;
+  return results
+    .map(({ hotel, score }) => formatHotelForSynthesizer(hotel, score))
+    .join('\n\n---\n\n');
 }
 
 // ---------------------------------------------------------------------------
-// Synthesizer agent
+// Synthesizer — compare hotels and write a recommendation
 // ---------------------------------------------------------------------------
 
 /**
- * Runs the synthesizer.
- *
- * No tools needed — calls the LLM directly with the system prompt and the
- * planner's hotel results to produce a concise plain-text recommendation.
+ * Calls the LLM directly with the planner's results to produce a concise
+ * plain-text hotel recommendation.
  */
-async function runSynthesizerAgent(
+async function runSynthesizer(
   synthLlm: Ollama,
   userQuery: string,
   hotelContext: string,
@@ -128,7 +102,7 @@ async function runSynthesizerAgent(
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-  const { embedModel, plannerLlm, synthLlm, dbConfig } = createClients();
+  const { embedModel, synthLlm, dbConfig } = createClients();
 
   const vectorStore = new DocumentDBVectorStore(
     dbConfig.client,
@@ -150,27 +124,20 @@ async function main(): Promise<void> {
       `Connected to vector store: ${dbConfig.databaseName}.${dbConfig.collectionName}`,
     );
 
-    const query =
-      process.env.QUERY ?? 'quintessential lodging near running trails, eateries, and retail';
+    const query = await promptForQuery();
     const nearestNeighbors = parseInt(process.env.NEAREST_NEIGHBORS ?? '5', 10);
 
     console.log(`\nQuery: "${query}"`);
     console.log(`Nearest neighbors: ${nearestNeighbors}`);
 
-    const hotelContext = await runPlannerAgent(
-      plannerLlm,
-      embedModel,
-      vectorStore,
-      query,
-      nearestNeighbors,
-    );
+    const hotelContext = await runPlanner(embedModel, vectorStore, query, nearestNeighbors);
 
     if (!hotelContext) {
-      console.error('Planner did not invoke the search tool. Try a model with better instruction following.');
+      console.error('No hotels found. Make sure the database is seeded with "npm run upload".');
       process.exit(1);
     }
 
-    const finalAnswer = await runSynthesizerAgent(synthLlm, query, hotelContext);
+    const finalAnswer = await runSynthesizer(synthLlm, query, hotelContext);
 
     console.log('\n--- FINAL ANSWER ---');
     console.log(finalAnswer);

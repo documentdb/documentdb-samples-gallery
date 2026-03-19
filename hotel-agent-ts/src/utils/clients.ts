@@ -1,4 +1,4 @@
-import { Ollama, OllamaEmbedding } from '@llamaindex/ollama';
+import { Ollama, OllamaEmbedding } from 'llamaindex';
 import { MongoClient } from 'mongodb';
 
 export interface DbConfig {
@@ -9,7 +9,6 @@ export interface DbConfig {
 
 export interface Clients {
   embedModel: OllamaEmbedding;
-  plannerLlm: Ollama;
   synthLlm: Ollama;
   dbConfig: DbConfig;
 }
@@ -28,12 +27,6 @@ export function createClients(): Clients {
     config: { host },
   });
 
-  const plannerLlm = new Ollama({
-    model: process.env.OLLAMA_PLANNER_MODEL ?? 'llama3.2',
-    config: { host },
-    options: { temperature: 0 },
-  });
-
   const synthLlm = new Ollama({
     model: process.env.OLLAMA_SYNTH_MODEL ?? 'llama3.2',
     config: { host },
@@ -45,7 +38,6 @@ export function createClients(): Clients {
 
   return {
     embedModel,
-    plannerLlm,
     synthLlm,
     dbConfig: {
       client: new MongoClient(connectionString),

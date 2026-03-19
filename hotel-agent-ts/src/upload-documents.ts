@@ -50,7 +50,7 @@ async function main(): Promise<void> {
 
   for (let i = 0; i < hotels.length; i++) {
     const hotel = hotels[i];
-    const embedding = await embedModel.getQueryEmbedding(hotel.Description);
+    const embedding = await embedModel.getTextEmbedding(hotel.Description);
     process.stdout.write(`  [${i + 1}/${hotels.length}] ${hotel.HotelName}\n`);
     hotelDocuments.push({ ...hotel, embedding });
   }

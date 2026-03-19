@@ -115,12 +115,10 @@ export class DocumentDBVectorStore {
           returnStoredSource: true,
         },
       },
-      {
-        $project: {
-          similarityScore: { $meta: 'searchScore' },
-          embedding: 0, // exclude large embedding arrays from results
-        },
-      },
+      // Add score as a field first, then exclude the large embedding array.
+      // DocumentDB does not allow mixing inclusion and exclusion in one $project.
+      { $addFields: { similarityScore: { $meta: 'searchScore' } } },
+      { $project: { embedding: 0 } },
     ];
 
     const rawResults = await this.collection.aggregate(pipeline).toArray();

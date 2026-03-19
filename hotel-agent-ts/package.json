@@ -27,7 +27,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@llamaindex/ollama": "^0.1.0",
     "dotenv": "^16.4.0",
     "llamaindex": "^0.8.0",
     "mongodb": "^6.9.0"
