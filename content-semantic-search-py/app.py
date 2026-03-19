@@ -10,6 +10,8 @@ from utils.embeddings import get_embedding
 
 app = Flask(__name__)
 
+DEFAULT_NUM_RESULTS = 5
+
 _client = None
 _col = None
 
@@ -70,7 +72,13 @@ def index():
 def search():
     query = request.form.get("query", "").strip()
     content_type = request.form.get("content_type", "all")
-    num_results = int(request.form.get("num_results", 5))
+    raw_num_results = request.form.get("num_results", "")
+    try:
+        num_results = int(raw_num_results)
+        if num_results <= 0:
+            num_results = DEFAULT_NUM_RESULTS
+    except (TypeError, ValueError):
+        num_results = DEFAULT_NUM_RESULTS
     content_types = get_content_types()
 
     results = []
