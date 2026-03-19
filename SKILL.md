@@ -119,34 +119,47 @@ psql -h localhost --port 9712 -d postgres -U documentdb
 
 ### Option C — Build from Source (Ubuntu/Debian)
 
+If you want to build and run DocumentDB from source (instead of using Docker), follow these steps. This guide is designed for beginners and works best on Ubuntu/Debian. For other operating systems, package names may differ.
+
+**Prerequisites**
+
+*Recommended:* use the provided devcontainer for VSCode which contains all the dependencies pre-installed.
+
+Or install the required dependencies manually:
+
 ```bash
-# 1. Clone
-git clone https://github.com/microsoft/documentdb.git
-cd documentdb
+sudo apt update
+sudo apt install build-essential libbson-dev postgresql-server-dev-all pkg-config rustc cargo
+```
 
-# 2. Build Docker dev image
-docker build -f .devcontainer/Dockerfile -t documentdb .
+**Step 1: Build PostgreSQL Extensions**
 
-# 3. Run container (mounts local repo inside)
-docker run -v $(pwd):/home/documentdb/code -it documentdb /bin/bash
-cd code
-
-# 4. Build and install PostgreSQL extensions
-make
+```bash
 sudo make install
+```
 
-# 5. Start PostgreSQL + Gateway together
+**Step 2: Build the Gateway**
+
+```bash
+scripts/build_and_install_with_pgrx.sh -i -d pg_documentdb_gw_host/
+```
+
+**Step 3: Start PostgreSQL and the Gateway**
+
+```bash
 scripts/start_oss_server.sh -c -g
 ```
 
-Connect via MongoDB client:
+**Step 4: Connect and Test**
+
+Using a MongoDB client:
 
 ```bash
 mongosh --host localhost --port 10260 --tls --tlsAllowInvalidCertificates \
   -u docdb_user -p Admin100
 ```
 
-Connect via psql:
+Using the PostgreSQL shell:
 
 ```bash
 psql -p 9712 -d postgres
@@ -692,9 +705,11 @@ WHERE document @@ '{"$text": {"$search": "retrieval augmented generation"}}';
 - **Discord:** https://aka.ms/documentdb_discord
 - **Docs:** https://documentdb.io/docs
 - **Roadmap:** https://github.com/orgs/microsoft/projects/1407/views/1
+- **File Issues:** https://github.com/documentdb/documentdb/issues?q=is%3Aissue%20state%3Aopen%20label%3Adocumentdb-local
 - **FerretDB integration:** https://github.com/FerretDB/FerretDB (uses DocumentDB as backend)
 - **License:** MIT — https://opensource.org/license/mit
 - **Contributing:** See `CONTRIBUTING.md` in the repo
+
 
 ---
 
