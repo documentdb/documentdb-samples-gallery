@@ -1,0 +1,40 @@
+{
+  "name": "hotel-agent-ts",
+  "version": "1.0.0",
+  "description": "AI hotel recommendation agent using a two-agent architecture with TypeScript, LlamaIndex, Ollama, and DocumentDB (OSS) vector search",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/agent.js",
+    "upload": "npm run build && node dist/upload-documents.js",
+    "cleanup": "npm run build && node dist/cleanup.js",
+    "dev": "tsx src/agent.ts",
+    "dev:upload": "tsx src/upload-documents.ts",
+    "dev:cleanup": "tsx src/cleanup.ts"
+  },
+  "keywords": [
+    "documentdb",
+    "vector-search",
+    "llamaindex",
+    "ollama",
+    "ai-agent",
+    "rag",
+    "hotel-recommendation",
+    "open-source"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@llamaindex/ollama": "^0.1.0",
+    "dotenv": "^16.4.0",
+    "llamaindex": "^0.8.0",
+    "mongodb": "^6.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}

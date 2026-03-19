@@ -1,4 +1,21 @@
 samples:
+  - id: hotel-agent-ts
+    title: "Hotel Recommendation Agent: Two-Agent RAG with Vector Search in TypeScript"
+    description: "A TypeScript AI agent that uses a two-agent architecture (planner + synthesizer) with LangChain and Azure DocumentDB vector search to generate personalised hotel recommendations from natural-language queries."
+    language: TypeScript
+    industry: AI/ML
+    difficulty: Intermediate
+    tags:
+      - Vector Search
+      - AI Agent
+      - LangChain
+      - LangGraph
+      - Azure OpenAI
+      - Embeddings
+      - RAG
+      - Agentic
+    githubUrl: "https://github.com/documentdb/documentdb-samples-gallery/tree/main/hotel-agent-ts"
+
   - id: book-finder-js
     title: "BookFinder: AI-Powered Semantic Book Discovery"
     description: "A Node.js/Express app that uses OpenAI embeddings and DocumentDB vector search to let users discover books through natural language queries like 'dystopian future with rebellion'."
