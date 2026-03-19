@@ -1,4 +1,21 @@
 samples:
+  - id: hotel-agent-ts
+    title: "Hotel Recommendation Agent: RAG with Native Vector Search and LLM Synthesizer in TypeScript"
+    description: "A TypeScript app that uses DocumentDB OSS native vector search to retrieve semantically similar hotels from a natural-language query, then passes the results to a LlamaIndex synthesizer agent (llama3.2 via Ollama) to generate a concise, comparative recommendation. Runs entirely on open-source tools with no cloud accounts required."
+    language: TypeScript
+    industry: AI/ML
+    difficulty: Intermediate
+    tags:
+      - Vector Search
+      - AI Agent
+      - LlamaIndex
+      - Ollama
+      - Embeddings
+      - RAG
+      - DocumentDB OSS
+      - Open Source
+    githubUrl: "https://github.com/documentdb/documentdb-samples-gallery/tree/main/hotel-agent-ts"
+
   - id: book-finder-js
     title: "BookFinder: AI-Powered Semantic Book Discovery"
     description: "A Node.js/Express app that uses OpenAI embeddings and DocumentDB vector search to let users discover books through natural language queries like 'dystopian future with rebellion'."
@@ -12,3 +29,17 @@ samples:
       - Express
       - Semantic Search
     githubUrl: "https://github.com/documentdb/documentdb-samples-gallery/tree/main/book-finder-js"
+
+  - id: retail-product-store-js
+    title: "Retail Product Store: Full-Stack Product Catalog with DocumentDB"
+    description: "A Node.js/Express app backed by DocumentDB that serves a responsive retail storefront with product browsing, category filtering, sort, and keyword search. Products are stored in DocumentDB and served via a REST API, with a vanilla JS frontend."
+    language: Node.js
+    industry: Retail
+    difficulty: Beginner
+    tags:
+      - Express
+      - REST API
+      - DocumentDB OSS
+      - Vanilla JS
+      - Full Stack
+    githubUrl: "https://github.com/documentdb/documentdb-samples-gallery/tree/main/retail-product-store-js"

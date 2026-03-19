@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShopDB — Retail Store</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">&#9670;</span>
+          ShopDB
+        </div>
+        <div class="search-bar">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search products..."
+            autocomplete="off"
+          />
+          <button id="searchBtn" aria-label="Search">&#128269;</button>
+        </div>
+        <div class="header-actions">
+          <span class="db-badge">Powered by DocumentDB</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Everything you need, <br />all in one place.</h1>
+        <p>Curated products, real-time data from DocumentDB.</p>
+        <a href="#products" class="btn-hero">Shop Now</a>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <div class="controls" id="products">
+      <div class="controls-inner">
+        <div id="categoryTabs" class="category-tabs">
+          <!-- Injected by JS -->
+        </div>
+        <div class="sort-group">
+          <label for="sortSelect">Sort by</label>
+          <select id="sortSelect">
+            <option value="">Name (A–Z)</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <main>
+      <div id="productCount" class="product-count"></div>
+      <div id="productGrid" class="product-grid">
+        <div class="loading">Loading products&hellip;</div>
+      </div>
+    </main>
+
+    <!-- Product Modal -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal-backdrop" id="modalBackdrop"></div>
+      <div class="modal-card">
+        <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 ShopDB &mdash; Built with DocumentDB (MongoDB-compatible) &amp; Node.js</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

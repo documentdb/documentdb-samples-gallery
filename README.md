@@ -12,12 +12,41 @@ Each top-level folder is a self-contained sample application:
 
 ```
 documentdb-samples-gallery/
-├── book-finder-js/          # AI-powered semantic book search (Node.js)
+├── book-finder-js/          # AI-powered semantic book search (Node.js + OpenAI)
+├── hotel-agent-ts/          # Hotel recommendation agent — RAG + LLM synthesizer (TypeScript + Ollama)
+├── retail-product-store-js/ # Full-stack retail product catalog (Node.js + Express)
+├── SKILL.md                 # Claude Code skill — loads DocumentDB context into AI assistants
 ├── registry.yml             # Gallery metadata — edit this to add/update samples
 └── ...
 ```
 
 `registry.yml` is the source of truth for the gallery website. When a change to `registry.yml` is merged, the website automatically rebuilds and shows the updated list.
+
+---
+
+## Build Samples Faster with SKILL.md
+
+This repo includes a [`SKILL.md`](./SKILL.md) file — a Claude Code skill that gives AI assistants deep, project-specific context about DocumentDB. Load it into your Claude Code session to get accurate, idiomatic help scaffolding samples, writing queries, configuring connections, and seeding data without needing to explain DocumentDB specifics every time.
+
+### How hotel-agent-ts was built using SKILL.md
+
+The [`hotel-agent-ts`](./hotel-agent-ts) sample was scaffolded entirely through a Claude Code session with `SKILL.md` loaded. Here is what that looked like in practice:
+
+**1. The skill provided DocumentDB context up front.** Because SKILL.md encodes how DocumentDB's vector search works — the `cosmosSearch` index type, the `$search` aggregation stage, the `db.command()` workaround for non-standard index creation, and the two-stage `$addFields` + `$project` projection pattern — none of that had to be explained manually. Claude generated correct DocumentDB code on the first attempt.
+
+**2. Architecture decisions were made collaboratively.** The sample went through several iterations — starting with LangChain and Azure OpenAI, then switching to LlamaIndex, then removing all cloud dependencies in favour of Ollama and DocumentDB OSS. At each step, Claude adapted the code while the skill kept the DocumentDB layer consistent.
+
+**3. Real errors were caught and fixed in the session.** Errors like `Cannot do exclusion on field embedding in inclusion projection` (DocumentDB does not allow mixing `$project` inclusions and exclusions) and the IPv6 connection refusal (`ECONNREFUSED ::1:11434`) were diagnosed and fixed without leaving the chat. The SKILL.md context helped Claude recognise that the projection issue was a DocumentDB-specific constraint, not a generic MongoDB one.
+
+**4. The final architecture reflects the skill's guidance.** The planner uses DocumentDB's native `$search` aggregation for vector retrieval — exactly as described in SKILL.md — rather than a third-party vector library. The synthesizer is a lightweight LLM agent built on top of that retrieval layer using LlamaIndex and a locally running Ollama model.
+
+To build your own sample the same way, open a Claude Code session in this repo and type:
+
+```
+/documentdb-builder
+```
+
+Claude will load the SKILL.md context and be ready to help you scaffold, query, and connect to DocumentDB accurately from the start.
 
 ---
 
@@ -82,6 +111,8 @@ Open a PR against `main`. Once merged, the gallery website rebuilds automaticall
 | Sample | Language | Difficulty | Tags |
 |--------|----------|------------|------|
 | [BookFinder: AI-Powered Semantic Book Discovery](./book-finder-js) | Node.js | Intermediate | Vector Search, OpenAI, Embeddings |
+| [Hotel Recommendation Agent: RAG with Native Vector Search and LLM Synthesizer](./hotel-agent-ts) | TypeScript | Intermediate | Vector Search, RAG, AI Agent, LlamaIndex, Ollama, Open Source |
+| [Retail Product Store: Full-Stack Product Catalog with DocumentDB](./retail-product-store-js) | Node.js | Beginner | Express, REST API, DocumentDB OSS, Full Stack |
 
 ---
 

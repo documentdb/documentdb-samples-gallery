@@ -1,0 +1,242 @@
+[
+  {
+    "HotelId": "1",
+    "HotelName": "Nordick's Valley Motel",
+    "Description": "This motel sits along a scenic corridor in Washington D.C., within walking distance of the National Mall's running trails along the Potomac River. Guests enjoy continental breakfast, free parking, and air-conditioned rooms steps from historic monuments, museums, retail shops, and casual eateries.",
+    "Category": "Budget",
+    "Tags": ["free parking", "air conditioning", "continental breakfast", "historic nearby", "running trails"],
+    "ParkingIncluded": true,
+    "Rating": 4.5,
+    "Address": {
+      "StreetAddress": "300 Constitution Ave NW",
+      "City": "Washington D.C.",
+      "StateProvince": "DC",
+      "PostalCode": "20001",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "2",
+    "HotelName": "White Mountain Lodge & Suites",
+    "Description": "A full-service mountain resort nestled in the foothills outside Denver, surrounded by pine forest with direct access to scenic hiking and trail running paths. Features a heated pool, full-service restaurant, meditation gardens, and spa — ideal for guests who want resort-level amenities close to nature.",
+    "Category": "Resort",
+    "Tags": ["pool", "restaurant", "spa", "hiking trails", "meditation garden", "forest setting"],
+    "ParkingIncluded": true,
+    "Rating": 2.4,
+    "Address": {
+      "StreetAddress": "8900 Mountain View Rd",
+      "City": "Evergreen",
+      "StateProvince": "CO",
+      "PostalCode": "80439",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "3",
+    "HotelName": "Trails End Motel",
+    "Description": "A no-frills, budget-friendly motel in the heart of Scottsdale close to Old Town eateries, boutique retail, and the popular Scottsdale Greenbelt running and cycling trail. Guests get free wifi, free parking, and a on-site restaurant — everything needed for an active, urban stay.",
+    "Category": "Budget",
+    "Tags": ["free wifi", "free parking", "restaurant", "running trail nearby", "retail nearby"],
+    "ParkingIncluded": true,
+    "Rating": 3.2,
+    "Address": {
+      "StreetAddress": "7340 E Shoeman Ln",
+      "City": "Scottsdale",
+      "StateProvince": "AZ",
+      "PostalCode": "85251",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "4",
+    "HotelName": "Country Comfort Inn",
+    "Description": "A charming rural inn on Vermont's rolling hills, surrounded by farm-to-table dining establishments and scenic country roads popular with cyclists and joggers. Cozy rooms with fireplaces, homemade breakfasts, and a barn-style common room create a genuine New England experience.",
+    "Category": "Boutique",
+    "Tags": ["farm-to-table", "fireplace", "homemade breakfast", "cycling", "countryside"],
+    "ParkingIncluded": true,
+    "Rating": 4.1,
+    "Address": {
+      "StreetAddress": "2 Main St",
+      "City": "Woodstock",
+      "StateProvince": "VT",
+      "PostalCode": "05091",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "5",
+    "HotelName": "Lakefront Captain Inn",
+    "Description": "A waterfront inn on the shores of Lake Tahoe offering kayak and paddleboard rentals, lakeside running paths, and immediate access to local seafood restaurants and outdoor outfitters. Rooms have private balconies with panoramic lake views, and guests can rent bikes to explore the 72-mile Tahoe Rim Trail.",
+    "Category": "Boutique",
+    "Tags": ["lakefront", "kayak rental", "bike rental", "running path", "restaurant nearby", "outdoor activities"],
+    "ParkingIncluded": false,
+    "Rating": 4.3,
+    "Address": {
+      "StreetAddress": "950 North Lake Blvd",
+      "City": "Tahoe City",
+      "StateProvince": "CA",
+      "PostalCode": "96145",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "6",
+    "HotelName": "Pacific Crest Trail Lodge",
+    "Description": "An adventurer's basecamp in Portland, Oregon, minutes from Forest Park's 80+ miles of hiking and trail running paths. The lodge offers gear storage, a fuel-up breakfast bar, craft beer tap room, and a gear-repair station — perfectly catering to hikers, trail runners, and outdoor enthusiasts.",
+    "Category": "Budget",
+    "Tags": ["trail access", "gear storage", "breakfast", "craft beer", "hiking", "trail running"],
+    "ParkingIncluded": true,
+    "Rating": 4.0,
+    "Address": {
+      "StreetAddress": "1415 NW 23rd Ave",
+      "City": "Portland",
+      "StateProvince": "OR",
+      "PostalCode": "97210",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "7",
+    "HotelName": "Sunrise Beach Resort",
+    "Description": "A sun-drenched oceanfront resort in Miami Beach with three pools, multiple beachside restaurants, a full-service spa, and a fitness center overlooking the Atlantic. The resort is steps from the famous Ocean Drive retail strip and the Miami Beach Boardwalk jogging path.",
+    "Category": "Resort",
+    "Tags": ["pool", "beach", "spa", "fitness center", "restaurant", "boardwalk", "retail nearby"],
+    "ParkingIncluded": false,
+    "Rating": 4.6,
+    "Address": {
+      "StreetAddress": "1500 Collins Ave",
+      "City": "Miami Beach",
+      "StateProvince": "FL",
+      "PostalCode": "33139",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "8",
+    "HotelName": "Mountain View Inn",
+    "Description": "A ski-in / ski-out lodge perched on the slopes of Aspen Mountain, offering direct access to world-class downhill runs and backcountry trails. The inn features a slope-side hot tub, après-ski lounge, on-site gear rentals, and is a short walk from Aspen's celebrated restaurant scene and boutique shops.",
+    "Category": "Luxury",
+    "Tags": ["ski-in ski-out", "hot tub", "lounge", "gear rental", "mountain trails", "restaurant nearby", "retail nearby"],
+    "ParkingIncluded": true,
+    "Rating": 4.7,
+    "Address": {
+      "StreetAddress": "200 S Aspen St",
+      "City": "Aspen",
+      "StateProvince": "CO",
+      "PostalCode": "81611",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "9",
+    "HotelName": "City Lights Hotel",
+    "Description": "A stylish mid-range hotel in San Francisco's Union Square neighborhood, surrounded by world-class retail, cafes, and restaurants. The Embarcadero waterfront running path is a short Muni ride away, and the hotel offers a rooftop terrace with sweeping bay views and complimentary bikes for guests.",
+    "Category": "Midscale",
+    "Tags": ["rooftop terrace", "complimentary bikes", "retail nearby", "restaurant nearby", "bay views"],
+    "ParkingIncluded": false,
+    "Rating": 4.2,
+    "Address": {
+      "StreetAddress": "345 Post St",
+      "City": "San Francisco",
+      "StateProvince": "CA",
+      "PostalCode": "94102",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "10",
+    "HotelName": "Green Valley Spa & Resort",
+    "Description": "An award-winning wellness destination in Sedona surrounded by red rock formations and world-famous hiking and trail running routes. The resort offers daily guided hikes, yoga, meditation, spa treatments, a farm-to-table restaurant, and an infinity pool with panoramic canyon views.",
+    "Category": "Resort",
+    "Tags": ["spa", "guided hikes", "yoga", "pool", "restaurant", "farm-to-table", "trail running", "wellness"],
+    "ParkingIncluded": true,
+    "Rating": 4.8,
+    "Address": {
+      "StreetAddress": "8 Canyon Diablo Rd",
+      "City": "Sedona",
+      "StateProvince": "AZ",
+      "PostalCode": "86336",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "11",
+    "HotelName": "Harbor House Inn",
+    "Description": "A waterfront boutique hotel in Seattle's Pike Place Market district, nestled between working fishing piers and the famous market's fresh seafood restaurants and artisan retail stalls. Guests can jog along the Elliott Bay Trail, explore local coffee shops, or hop a ferry to scenic Bainbridge Island.",
+    "Category": "Boutique",
+    "Tags": ["waterfront", "restaurant nearby", "retail nearby", "jogging trail", "ferry access", "coffee shops"],
+    "ParkingIncluded": false,
+    "Rating": 4.4,
+    "Address": {
+      "StreetAddress": "1001 First Ave",
+      "City": "Seattle",
+      "StateProvince": "WA",
+      "PostalCode": "98104",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "12",
+    "HotelName": "Desert Springs Hotel",
+    "Description": "A large convention hotel on the Las Vegas Strip featuring a lazy river, six restaurants, a nightclub, casino, and a flagship retail promenade. The hotel's spa and fitness center accommodate guests who want active recovery between shows, and a nearby bike share connects to the Vegas Valley Rim Trail.",
+    "Category": "Resort",
+    "Tags": ["pool", "casino", "restaurant", "spa", "fitness center", "retail", "nightclub"],
+    "ParkingIncluded": true,
+    "Rating": 3.8,
+    "Address": {
+      "StreetAddress": "3600 Las Vegas Blvd S",
+      "City": "Las Vegas",
+      "StateProvince": "NV",
+      "PostalCode": "89109",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "13",
+    "HotelName": "The Summit Lodge",
+    "Description": "A contemporary mountain lodge in Denver's foothills combining easy access to Rocky Mountain trails with urban convenience. After a run on the lodge's private trail network, guests can visit the on-site gastropub, or drive ten minutes to Cherry Creek's designer retail district and farm-to-table restaurant row.",
+    "Category": "Midscale",
+    "Tags": ["private trails", "gastropub", "mountain views", "retail nearby", "restaurant nearby", "outdoor activities"],
+    "ParkingIncluded": true,
+    "Rating": 4.0,
+    "Address": {
+      "StreetAddress": "1 Summit Circle",
+      "City": "Golden",
+      "StateProvince": "CO",
+      "PostalCode": "80401",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "14",
+    "HotelName": "Maple Grove Bed & Breakfast",
+    "Description": "A family-run bed and breakfast on a working maple farm in Vermont, serving locally sourced farm breakfasts and homemade maple syrup. Country lanes around the property are perfect for morning runs, cycling, and leaf-peeping walks, while nearby Woodstock village offers artisan shops and acclaimed farm-to-table restaurants.",
+    "Category": "Budget",
+    "Tags": ["farm breakfast", "maple syrup", "cycling", "running lanes", "artisan shops", "farm-to-table"],
+    "ParkingIncluded": true,
+    "Rating": 4.6,
+    "Address": {
+      "StreetAddress": "45 Maple Farm Rd",
+      "City": "Quechee",
+      "StateProvince": "VT",
+      "PostalCode": "05059",
+      "Country": "USA"
+    }
+  },
+  {
+    "HotelId": "15",
+    "HotelName": "Riverside Runner's Inn",
+    "Description": "A purpose-built endurance sports hotel in Austin, Texas, set directly on the Lady Bird Lake running and cycling trail. Amenities include treadmill and strength rooms open 24/7, a smoothie and nutrition bar, next-day laundry, compression therapy stations, and walking distance access to South Congress Avenue's acclaimed restaurants and boutique retail.",
+    "Category": "Midscale",
+    "Tags": ["running trail", "cycling trail", "fitness center", "nutrition bar", "laundry", "restaurant nearby", "retail nearby"],
+    "ParkingIncluded": false,
+    "Rating": 4.5,
+    "Address": {
+      "StreetAddress": "500 W Riverside Dr",
+      "City": "Austin",
+      "StateProvince": "TX",
+      "PostalCode": "78704",
+      "Country": "USA"
+    }
+  }
+]
