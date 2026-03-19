@@ -16,6 +16,15 @@ _client = None
 _col = None
 
 
+@app.teardown_appcontext
+def close_mongo_client(exception=None):
+    global _client, _col
+    if _client is not None:
+        _client.close()
+        _client = None
+        _col = None
+
+
 def get_col():
     global _client, _col
     if _col is None:
