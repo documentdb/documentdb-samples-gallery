@@ -1,0 +1,222 @@
+[
+  {
+    "note_id": "CN001",
+    "specialty": "Cardiology",
+    "diagnosis": "Acute ST-Elevation Myocardial Infarction",
+    "age_group": "51-65",
+    "sex": "M",
+    "chief_complaint": "Sudden onset severe chest pain radiating to left arm and jaw for 2 hours",
+    "clinical_note": "Patient presents with acute onset substernal chest pressure rated 9/10, radiating to the left arm and jaw, associated with diaphoresis and shortness of breath. ECG demonstrates ST elevations in leads II, III, and aVF consistent with an inferior STEMI. Troponin I markedly elevated at 12.4 ng/mL on initial draw. Patient was emergently taken to cardiac catheterization laboratory where a 100% occlusion of the right coronary artery was identified and successfully treated with primary PCI and drug-eluting stent placement. Patient transferred to cardiac ICU for post-procedural monitoring with plans for dual antiplatelet therapy.",
+    "icd_code": "I21.0",
+    "outcome": "admitted"
+  },
+  {
+    "note_id": "CN002",
+    "specialty": "Cardiology",
+    "diagnosis": "Unstable Angina",
+    "age_group": "51-65",
+    "sex": "F",
+    "chief_complaint": "Recurring chest tightness at rest lasting 10-15 minutes over past 3 days",
+    "clinical_note": "Patient reports worsening episodes of chest tightness occurring at rest over the past three days, each lasting 10-15 minutes with associated dyspnea and mild nausea. Risk factors include hypertension, hyperlipidemia, and a 20 pack-year smoking history. Initial troponin levels are within normal limits but ECG shows transient ST depression in leads V4-V6 during symptomatic episodes. Patient was admitted for continuous cardiac monitoring, started on aspirin and heparin infusion, and cardiology consult obtained for urgent coronary angiography.",
+    "icd_code": "I20.0",
+    "outcome": "admitted"
+  },
+  {
+    "note_id": "CN003",
+    "specialty": "Cardiology",
+    "diagnosis": "Atrial Fibrillation with Rapid Ventricular Response",
+    "age_group": "65+",
+    "sex": "M",
+    "chief_complaint": "Palpitations, shortness of breath, and lightheadedness for 6 hours",
+    "clinical_note": "Patient presents with 6 hours of palpitations described as rapid and irregular, accompanied by exertional dyspnea and lightheadedness. ECG confirms atrial fibrillation with a ventricular rate of 138 bpm. Echocardiogram shows mildly reduced left ventricular ejection fraction at 45%. Patient was given IV metoprolol for rate control achieving adequate rate reduction to 85 bpm. Anticoagulation initiated with apixaban after ruling out intracranial hemorrhage. Patient discharged with cardiology follow-up and recommendation for elective cardioversion.",
+    "icd_code": "I48.0",
+    "outcome": "discharged"
+  },
+  {
+    "note_id": "CN004",
+    "specialty": "Cardiology",
+    "diagnosis": "Congestive Heart Failure with Reduced Ejection Fraction",
+    "age_group": "65+",
+    "sex": "F",
+    "chief_complaint": "Progressive shortness of breath, bilateral leg swelling, and orthopnea for one week",
+    "clinical_note": "Patient presents with one week of progressive exertional dyspnea now present at rest, two-pillow orthopnea, and bilateral lower extremity pitting edema up to the knees. BNP markedly elevated at 1850 pg/mL. Chest X-ray demonstrates cardiomegaly with bilateral pleural effusions and pulmonary vascular congestion. Echocardiogram confirms severely reduced ejection fraction of 25% with global hypokinesis. Patient admitted for IV diuresis, fluid and sodium restriction, and optimization of heart failure medications including ACE inhibitor and beta blocker.",
+    "icd_code": "I50.2",
+    "outcome": "admitted"
+  },
+  {
+    "note_id": "CN005",
+    "specialty": "Pulmonology",
+    "diagnosis": "Community-Acquired Pneumonia",
+    "age_group": "36-50",
+    "sex": "M",
+    "chief_complaint": "Productive cough with yellow sputum, fever to 39.2°C, and right-sided chest pain for 4 days",
+    "clinical_note": "Patient presents with four days of productive cough with purulent yellow sputum, fever to 39.2°C, and pleuritic right-sided chest pain worsening with inspiration. Oxygen saturation 93% on room air. Chest X-ray demonstrates a right lower lobe consolidation consistent with lobar pneumonia. CBC shows leukocytosis at 14,500 with left shift. Sputum culture and blood cultures obtained prior to antibiotic initiation. Patient started on IV ceftriaxone and azithromycin and admitted for monitoring given oxygen requirement.",
+    "icd_code": "J18.9",
+    "outcome": "admitted"
+  },
+  {
+    "note_id": "CN006",
+    "specialty": "Pulmonology",
+    "diagnosis": "Acute Asthma Exacerbation",
+    "age_group": "18-35",
+    "sex": "F",
+    "chief_complaint": "Worsening shortness of breath, wheezing, and chest tightness despite home inhaler use",
+    "clinical_note": "Patient presents with acute worsening of shortness of breath and audible wheezing over the past 12 hours, not responding to multiple doses of home albuterol inhaler. Known history of moderate persistent asthma triggered by seasonal allergens. Respiratory rate 28/min, accessory muscle use noted on exam, and diffuse expiratory wheezes bilaterally. Peak flow 42% of predicted. Patient treated with continuous albuterol nebulization, ipratropium, systemic corticosteroids, and supplemental oxygen with significant improvement in symptoms and peak flow to 78% of predicted within 4 hours. Discharged with steroid taper and controller medication review.",
+    "icd_code": "J45.31",
+    "outcome": "discharged"
+  },
+  {
+    "note_id": "CN007",
+    "specialty": "Pulmonology",
+    "diagnosis": "COPD Exacerbation",
+    "age_group": "65+",
+    "sex": "M",
+    "chief_complaint": "Worsening shortness of breath, increased sputum production, and sputum color change for 5 days",
+    "clinical_note": "Patient with known severe COPD (FEV1 38% predicted) presents with 5-day history of increased dyspnea, sputum production increasing from baseline, and sputum color change from clear to green. Oxygen saturation 88% on home 2L nasal cannula, down from usual 93%. Chest X-ray shows hyperinflation without acute infiltrate. ABG demonstrates hypercapnia with pH 7.32, pCO2 58 mmHg. Patient started on controlled supplemental oxygen targeting SpO2 88-92%, bronchodilators, systemic corticosteroids, and broad-spectrum antibiotics. Respiratory therapy and pulmonology consulted.",
+    "icd_code": "J44.1",
+    "outcome": "admitted"
+  },
+  {
+    "note_id": "CN008",
+    "specialty": "Neurology",
+    "diagnosis": "Migraine with Aura",
+    "age_group": "18-35",
+    "sex": "F",
+    "chief_complaint": "Severe unilateral throbbing headache preceded by visual disturbances for 3 hours",
+    "clinical_note": "Patient presents with a 3-hour history of severe left-sided throbbing headache rated 8/10, preceded by 20 minutes of visual aura described as flickering zigzag lines expanding across the right visual field. Associated symptoms include photophobia, phonophobia, and nausea without vomiting. Neurological examination is normal. No fever, neck stiffness, or papilledema. History of similar episodic headaches since adolescence consistent with prior migraine diagnoses. Patient given IV ketorolac, IV metoclopramide, and IV fluids with significant pain relief within 1 hour. Discharged with triptan prescription and neurology follow-up.",
+    "icd_code": "G43.1",
+    "outcome": "discharged"
+  },
+  {
+    "note_id": "CN009",
+    "specialty": "Neurology",
+    "diagnosis": "Acute Ischemic Stroke",
+    "age_group": "65+",
+    "sex": "M",
+    "chief_complaint": "Sudden onset right-sided facial droop, right arm weakness, and slurred speech",
+    "clinical_note": "Patient presents via EMS with sudden onset of right facial droop, right arm weakness, and dysarthria with last known well time 90 minutes prior to arrival. NIHSS score 12. Non-contrast CT head negative for hemorrhage. CT angiography demonstrates occlusion of the left middle cerebral artery M2 segment. Patient assessed as eligible for IV alteplase and thrombolysis initiated at 110 minutes from last known well. Interventional neurology team activated and patient underwent successful mechanical thrombectomy with TICI 2b reperfusion. Admitted to stroke unit for monitoring and rehabilitation assessment.",
+    "icd_code": "I63.5",
+    "outcome": "admitted"
+  },
+  {
+    "note_id": "CN010",
+    "specialty": "Neurology",
+    "diagnosis": "First Unprovoked Generalized Tonic-Clonic Seizure",
+    "age_group": "18-35",
+    "sex": "M",
+    "chief_complaint": "Witnessed generalized convulsion lasting approximately 2 minutes with post-ictal confusion",
+    "clinical_note": "Patient brought in by family after a witnessed generalized tonic-clonic seizure lasting approximately 2 minutes with post-ictal confusion lasting 30 minutes. Patient has no prior seizure history and denies recent sleep deprivation, alcohol withdrawal, or drug use. Blood glucose, electrolytes, and toxicology screen are within normal limits. MRI brain without contrast shows no structural abnormality. EEG ordered as outpatient demonstrates generalized epileptiform discharges. Neurology consulted and patient counseled regarding driving restrictions and safety precautions. Anti-epileptic therapy deferred pending outpatient EEG results.",
+    "icd_code": "G40.309",
+    "outcome": "referred"
+  },
+  {
+    "note_id": "CN011",
+    "specialty": "Gastroenterology",
+    "diagnosis": "Acute Appendicitis",
+    "age_group": "18-35",
+    "sex": "F",
+    "chief_complaint": "Periumbilical pain migrating to right lower quadrant over 18 hours with nausea and anorexia",
+    "clinical_note": "Patient presents with an 18-hour history of pain beginning periumbilically and migrating to the right lower quadrant, associated with nausea, loss of appetite, and low-grade fever to 38.1°C. Examination reveals point tenderness at McBurney's point with positive Rovsing's and psoas signs. WBC elevated at 13,200 with neutrophilia. CT abdomen/pelvis with contrast demonstrates a distended appendix measuring 10mm in diameter with periappendiceal fat stranding and no perforation. General surgery consulted and patient consented for laparoscopic appendectomy performed without complications.",
+    "icd_code": "K37",
+    "outcome": "admitted"
+  },
+  {
+    "note_id": "CN012",
+    "specialty": "Gastroenterology",
+    "diagnosis": "Gastroesophageal Reflux Disease with Esophagitis",
+    "age_group": "36-50",
+    "sex": "M",
+    "chief_complaint": "Chronic burning epigastric and chest pain worsening after meals and when lying down",
+    "clinical_note": "Patient presents with a 6-month history of burning substernal and epigastric pain occurring daily, worsening 30-60 minutes after meals and when recumbent, with associated regurgitation and hoarseness. Alarm symptoms including dysphagia, weight loss, and melena are absent. Upper endoscopy performed reveals Los Angeles Grade B erosive esophagitis with no Barrett's changes or hiatal hernia. Patient counseled extensively on lifestyle modifications including weight reduction, dietary changes, and elevating the head of the bed. Started on twice-daily proton pump inhibitor therapy with plan for 8-week repeat endoscopy.",
+    "icd_code": "K21.0",
+    "outcome": "follow-up"
+  },
+  {
+    "note_id": "CN013",
+    "specialty": "Orthopedics",
+    "diagnosis": "Displaced Distal Radius Fracture",
+    "age_group": "65+",
+    "sex": "F",
+    "chief_complaint": "Wrist pain and deformity after fall on outstretched hand",
+    "clinical_note": "Patient presents after a ground-level fall on an outstretched hand with immediate onset of right wrist pain, swelling, and visible deformity. Neurovascular examination of the hand is intact. X-rays demonstrate a displaced Colles-type distal radius fracture with dorsal angulation of 25 degrees and 4mm of radial shortening, without intra-articular extension. Patient underwent closed reduction under hematoma block with adequate reduction achieved and confirmed on post-reduction X-ray, and immobilized in a sugar-tong splint. Orthopedic surgery follow-up arranged in 5 days for wound check and definitive management decision between casting and surgical fixation.",
+    "icd_code": "S52.501A",
+    "outcome": "follow-up"
+  },
+  {
+    "note_id": "CN014",
+    "specialty": "Orthopedics",
+    "diagnosis": "Lumbar Disc Herniation with Radiculopathy",
+    "age_group": "36-50",
+    "sex": "M",
+    "chief_complaint": "Low back pain with radiation down the left leg to the foot, worsened by sitting",
+    "clinical_note": "Patient presents with a 3-week history of low back pain with sharp shooting pain radiating down the left leg in an L5 distribution to the dorsum of the foot, worsened by prolonged sitting, coughing, and Valsalva maneuver. Straight leg raise test positive on the left at 40 degrees. Neurological examination reveals mild left great toe extensor weakness and decreased sensation over the left lateral calf. MRI lumbar spine demonstrates a large left paracentral L4-L5 disc herniation with moderate left lateral recess stenosis and nerve root compression. Patient started on NSAIDs, muscle relaxants, and referred for physical therapy and pain management.",
+    "icd_code": "M51.16",
+    "outcome": "referred"
+  },
+  {
+    "note_id": "CN015",
+    "specialty": "Orthopedics",
+    "diagnosis": "Anterior Cruciate Ligament Tear",
+    "age_group": "18-35",
+    "sex": "M",
+    "chief_complaint": "Right knee pain and instability after sudden pivoting injury during soccer match",
+    "clinical_note": "Patient presents with acute right knee pain after a non-contact pivoting injury during a soccer match, reporting a felt pop at the time of injury followed by immediate pain and swelling. Examination reveals a moderate hemarthrosis and positive Lachman test with a soft endpoint, along with a positive pivot shift test. McMurray test mildly positive medially. MRI right knee confirms complete ACL tear with concomitant medial meniscus posterior horn tear and bone bruising of the lateral femoral condyle consistent with the mechanism of injury. Patient referred to orthopedic surgery for discussion of ACL reconstruction and meniscal repair.",
+    "icd_code": "M23.611",
+    "outcome": "referred"
+  },
+  {
+    "note_id": "CN016",
+    "specialty": "Endocrinology",
+    "diagnosis": "Type 2 Diabetes Mellitus with Poor Glycemic Control",
+    "age_group": "51-65",
+    "sex": "F",
+    "chief_complaint": "Increased thirst, frequent urination, fatigue, and blurred vision for several weeks",
+    "clinical_note": "Patient with known type 2 diabetes on metformin presents with worsening polyuria, polydipsia, fatigue, and blurred vision over several weeks. HbA1c markedly elevated at 11.2% compared to prior value of 7.8% six months ago. Fasting blood glucose 284 mg/dL. Review reveals poor medication adherence and significant dietary nonadherence over the past several months. Dilated fundus examination reveals early non-proliferative diabetic retinopathy. Urine microalbumin-to-creatinine ratio elevated at 85 mg/g. Metformin dose adjusted, long-acting insulin initiated, and patient referred to diabetes education program and dietitian.",
+    "icd_code": "E11.65",
+    "outcome": "follow-up"
+  },
+  {
+    "note_id": "CN017",
+    "specialty": "Endocrinology",
+    "diagnosis": "Hashimoto's Thyroiditis with Hypothyroidism",
+    "age_group": "36-50",
+    "sex": "F",
+    "chief_complaint": "Fatigue, weight gain, cold intolerance, constipation, and dry skin over 6 months",
+    "clinical_note": "Patient presents with a 6-month history of progressive fatigue, 8-pound weight gain despite unchanged diet, cold intolerance, constipation, and dry skin with diffuse hair thinning. Thyroid palpation reveals a mildly enlarged, firm, non-tender gland without discrete nodules. TSH markedly elevated at 24 mIU/L with low free T4 at 0.6 ng/dL. Anti-TPO antibodies markedly positive at 1240 IU/mL consistent with autoimmune thyroiditis. Thyroid ultrasound demonstrates heterogeneous echotexture with increased vascularity typical of Hashimoto's thyroiditis. Levothyroxine therapy initiated at 75 mcg daily with follow-up TSH in 6 weeks.",
+    "icd_code": "E06.3",
+    "outcome": "follow-up"
+  },
+  {
+    "note_id": "CN018",
+    "specialty": "Dermatology",
+    "diagnosis": "Cellulitis of the Lower Extremity",
+    "age_group": "51-65",
+    "sex": "M",
+    "chief_complaint": "Rapidly spreading redness, warmth, swelling, and pain of the right lower leg",
+    "clinical_note": "Patient presents with a 2-day history of worsening redness, warmth, swelling, and pain of the right lower leg following a minor abrasion from a gardening tool. Exam reveals a well-demarcated area of erythema measuring 12 x 8 cm over the right anterior shin with associated lymphangitic streaking extending proximally toward the knee. Temperature 38.4°C and WBC 11,800. No crepitus, fluctuance, or bullae to suggest necrotizing fasciitis or abscess formation. Blood cultures drawn. Patient started on IV cefazolin with dramatic improvement in erythema borders over 48 hours, transitioned to oral cephalexin and discharged with wound care instructions.",
+    "icd_code": "L03.115",
+    "outcome": "discharged"
+  },
+  {
+    "note_id": "CN019",
+    "specialty": "Dermatology",
+    "diagnosis": "Plaque Psoriasis",
+    "age_group": "36-50",
+    "sex": "M",
+    "chief_complaint": "Chronic itchy raised scaly plaques on elbows, knees, and scalp with recent flare",
+    "clinical_note": "Patient presents with a 10-year history of plaque psoriasis now experiencing a significant flare following a recent streptococcal upper respiratory infection. Examination reveals extensive erythematous, well-demarcated plaques with silver-white micaceous scale covering elbows, knees, lumbar region, and scalp, involving approximately 25% of body surface area. Auspitz sign positive. No evidence of nail pitting or psoriatic arthropathy. Prior treatments include topical corticosteroids with inadequate control. PASI score calculated at 16. Patient referred to dermatology for discussion of systemic therapy including biologics targeting IL-17 or IL-23 pathways.",
+    "icd_code": "L40.0",
+    "outcome": "referred"
+  },
+  {
+    "note_id": "CN020",
+    "specialty": "Gastroenterology",
+    "diagnosis": "Crohn's Disease Flare",
+    "age_group": "18-35",
+    "sex": "F",
+    "chief_complaint": "Crampy abdominal pain, bloody diarrhea 8-10 times per day, fatigue, and 10-pound weight loss",
+    "clinical_note": "Patient with known Crohn's disease on maintenance azathioprine presents with a 3-week flare of crampy lower abdominal pain, bloody diarrhea occurring 8-10 times daily, severe fatigue, and 10-pound weight loss. Exam reveals right lower quadrant tenderness without peritoneal signs. CRP elevated at 68 mg/L, ESR 82 mm/hr, albumin low at 2.8 g/dL, and hemoglobin 9.4 g/dL consistent with active disease and malnutrition. Fecal calprotectin markedly elevated at 2200 mcg/g. CT enterography demonstrates transmural thickening and hyperenhancement of the terminal ileum and proximal colon with mesenteric adenopathy. Patient admitted for IV corticosteroids, nutritional support, and expedited GI endoscopy.",
+    "icd_code": "K50.1",
+    "outcome": "admitted"
+  }
+]

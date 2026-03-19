@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ article.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Content Semantic Search</h1>
+      <p class="subtitle">Search articles, blogs, and research by meaning</p>
+    </div>
+  </header>
+
+  <main>
+    <a href="/" class="back-link">← Back to search</a>
+
+    <article class="article-detail">
+      <div class="article-header">
+        <span class="type-badge type-{{ article.type }}">{{ article.type }}</span>
+        <h2>{{ article.title }}</h2>
+        <div class="card-meta">
+          <span>{{ article.author }}</span>
+          <span class="dot">·</span>
+          <span>{{ article.date }}</span>
+          <span class="dot">·</span>
+          <span>ID: {{ article.article_id }}</span>
+        </div>
+      </div>
+
+      {% if article.tags %}
+      <div class="tag-row">
+        {% for tag in article.tags %}
+        <span class="tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="article-body">
+        <p>{{ article.content }}</p>
+      </div>
+    </article>
+  </main>
+
+  <footer>
+    <p>Built with <a href="https://github.com/microsoft/documentdb" target="_blank" rel="noopener noreferrer">DocumentDB OSS</a> · Vector search powered by <a href="https://ollama.com" target="_blank" rel="noopener noreferrer">Ollama</a></p>
+  </footer>
+</body>
+</html>

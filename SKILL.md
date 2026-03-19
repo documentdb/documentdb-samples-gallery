@@ -12,7 +12,7 @@ description: >
 
 ## What Is DocumentDB?
 
-DocumentDB is the engine powering [Azure DocumentDB](https://learn.microsoft.com/en-us/azure/documentdb/). It is a
+DocumentDB is the engine powering [Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/). It is a
 **fully open-source** (MIT license), document-oriented NoSQL database engine built
 natively on PostgreSQL. It exposes a MongoDB-compatible API while storing BSON documents
 inside a PostgreSQL framework.
@@ -88,7 +88,57 @@ mongosh localhost:10260 \
   --tlsAllowInvalidCertificates
 ```
 
-### Option B — Prebuilt Docker Image (PostgreSQL/psql access only)
+### Option B — Docker Compose (Recommended for Sample Projects)
+
+The cleanest way to run DocumentDB alongside your app in a sample. Create a
+`docker-compose.yml` at the root of your project:
+
+```yaml
+version: "3.8"
+
+services:
+  documentdb:
+    image: ghcr.io/microsoft/documentdb/documentdb-local:latest
+    ports:
+      - "10260:10260"
+    environment:
+      - USERNAME=docdbuser
+      - PASSWORD=Admin100!
+    restart: unless-stopped
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - documentdb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+```
+
+Start everything together:
+
+```bash
+docker compose up -d
+```
+
+Stop and remove containers:
+
+```bash
+docker compose down
+```
+
+If your sample is app-only (DocumentDB runs separately), include just the `documentdb`
+service and omit the `app` service. Your connection string should then point to
+`host.docker.internal:10260` from inside other containers, or `localhost:10260` from
+the host machine.
+
+---
+
+### Option C — Prebuilt Docker Image (PostgreSQL/psql access only)
 
 ```bash
 # Pull image (Ubuntu 22.04, PostgreSQL 16, AMD64, version 0.103.0)
@@ -117,42 +167,55 @@ External psql connection:
 psql -h localhost --port 9712 -d postgres -U documentdb
 ```
 
-### Option C — Build from Source (Ubuntu/Debian)
+### Option D — Build from Source (Ubuntu/Debian)
+
+If you want to build and run DocumentDB from source (instead of using Docker), follow these steps. This guide is designed for beginners and works best on Ubuntu/Debian. For other operating systems, package names may differ.
+
+**Prerequisites**
+
+*Recommended:* use the provided devcontainer for VSCode which contains all the dependencies pre-installed.
+
+Or install the required dependencies manually:
 
 ```bash
-# 1. Clone
-git clone https://github.com/microsoft/documentdb.git
-cd documentdb
+sudo apt update
+sudo apt install build-essential libbson-dev postgresql-server-dev-all pkg-config rustc cargo
+```
 
-# 2. Build Docker dev image
-docker build -f .devcontainer/Dockerfile -t documentdb .
+**Step 1: Build PostgreSQL Extensions**
 
-# 3. Run container (mounts local repo inside)
-docker run -v $(pwd):/home/documentdb/code -it documentdb /bin/bash
-cd code
-
-# 4. Build and install PostgreSQL extensions
-make
+```bash
 sudo make install
+```
 
-# 5. Start PostgreSQL + Gateway together
+**Step 2: Build the Gateway**
+
+```bash
+scripts/build_and_install_with_pgrx.sh -i -d pg_documentdb_gw_host/
+```
+
+**Step 3: Start PostgreSQL and the Gateway**
+
+```bash
 scripts/start_oss_server.sh -c -g
 ```
 
-Connect via MongoDB client:
+**Step 4: Connect and Test**
+
+Using a MongoDB client:
 
 ```bash
 mongosh --host localhost --port 10260 --tls --tlsAllowInvalidCertificates \
-  -u docdb_user -p Admin100
+  -u docdbuser -p Admin100!
 ```
 
-Connect via psql:
+Using the PostgreSQL shell:
 
 ```bash
 psql -p 9712 -d postgres
 ```
 
-### Option D — Build Custom Debian/Ubuntu Packages
+### Option E — Build Custom Debian/Ubuntu Packages
 
 ```bash
 # Build packages for Debian 12, PostgreSQL 16
@@ -560,6 +623,46 @@ users.update_one({'name': 'Alice'}, {'$set': {'age': 31}})
 users.delete_one({'name': 'Alice'})
 ```
 
+### Python `get_client()` — safe pattern for samples
+
+Always read the connection URI from an environment variable and exit with a clear
+message if it is missing. Only enable `tlsAllowInvalidCertificates` when an explicit
+env flag is set — do not default it to `True`, as that encourages insecure defaults
+if the code is reused against a real deployment.
+
+The connection string itself must always include `tls=true` and
+`tlsAllowInvalidCertificates=true` (for the local container) as query parameters so
+the intent is visible and auditable at the call site.
+
+```python
+import os
+import sys
+from pymongo import MongoClient
+
+
+def get_client() -> MongoClient:
+    uri = os.getenv("DOCUMENTDB_URI")
+    if not uri:
+        sys.exit(
+            "Error: DOCUMENTDB_URI environment variable is not set.\n"
+            "Copy .env.example to .env and fill in your connection string."
+        )
+    # tlsAllowInvalidCertificates is only safe for the local dev container.
+    # Never enable this against a real deployment — use a valid certificate instead.
+    allow_invalid_certs = os.getenv("DOCUMENTDB_ALLOW_INVALID_CERTS", "false").lower() == "true"
+    return MongoClient(uri, tlsAllowInvalidCertificates=allow_invalid_certs)
+```
+
+`.env.example` for the local container (sets the flag explicitly):
+
+```
+DOCUMENTDB_URI=mongodb://<username>:<password>@localhost:10260/?tls=true&tlsAllowInvalidCertificates=true&authMechanism=SCRAM-SHA-256
+DOCUMENTDB_ALLOW_INVALID_CERTS=true
+```
+
+For a real deployment, omit `DOCUMENTDB_ALLOW_INVALID_CERTS` (it defaults to `false`)
+and use a connection string without `tlsAllowInvalidCertificates=true`.
+
 ### Connecting via psql (Direct SQL)
 
 ```bash
@@ -595,7 +698,7 @@ SELECT * FROM documentdb_api.create_indexes_background(
       "name": "idx_vector",
       "cosmosSearchOptions": {
         "kind": "vector-ivf",
-        "numLists": 100,
+        "numLists": 1,
         "similarity": "COS",
         "dimensions": 1536
       }
@@ -606,6 +709,87 @@ SELECT * FROM documentdb_api.create_indexes_background(
 
 LangChain and Semantic Kernel both support MongoDB-compatible vector stores and work
 with DocumentDB through the Gateway without code changes.
+
+### Similarity metrics — `COS`, `L2`, `IP`
+
+Set via the `similarity` field in `cosmosSearchOptions`. Choose based on how your
+embedding model was trained:
+
+| Metric | Value | When to use |
+|---|---|---|
+| Cosine similarity | `COS` | Default choice for most text and multimodal embeddings. Measures the angle between vectors, ignoring magnitude. Use when vectors may not be normalised. |
+| Euclidean distance | `L2` | Use when absolute distance in vector space matters — e.g. image embeddings or models explicitly trained with L2 loss. |
+| Inner product | `IP` | Use only when vectors are already unit-normalised (magnitude = 1). Equivalent to cosine in that case but faster. Incorrect results if vectors are not normalised. |
+
+When in doubt, use `COS`. Most popular embedding models (`nomic-embed-text`,
+`text-embedding-ada-002`, `mxbai-embed-large`) are trained for cosine similarity.
+
+### `numLists` tuning for `vector-ivf`
+
+`numLists` controls how many inverted index partitions IVF builds. The rule of thumb
+is `sqrt(n)` where `n` is the number of documents in the collection.
+
+| Dataset size | Recommended `numLists` |
+|---|---|
+| < 100 documents | `1` |
+| ~1 000 documents | `32` |
+| ~10 000 documents | `100` |
+| ~100 000 documents | `316` |
+| ~1 000 000 documents | `1000` |
+
+Setting `numLists` too high relative to the dataset size **degrades recall** — the
+query probes too few documents per list and misses neighbours. Setting it too low
+reduces the benefit of the index. For development and small samples, always start
+with `numLists: 1`.
+
+### Querying the vector index — `$search` aggregation (MongoDB driver)
+
+Use the `$search` aggregation stage with `cosmosSearch` to run a vector similarity query.
+`returnStoredSource: true` is **required** — without it the stage does not return the
+source document fields, only internal metadata.
+
+```javascript
+const pipeline = [
+  {
+    $search: {
+      cosmosSearch: {
+        vector: queryEmbedding,   // number[] matching the index dimensions
+        path: 'embedding',        // field that holds the stored vector
+        k: 5,                     // number of nearest neighbours to return
+      },
+      returnStoredSource: true,   // REQUIRED — returns the full source document
+    },
+  },
+  // Split into two stages — see projection gotcha below
+  { $addFields: { similarityScore: { $meta: 'searchScore' } } },
+  { $project: { embedding: 0 } },
+];
+
+const results = await collection.aggregate(pipeline).toArray();
+```
+
+### Projection gotcha — never mix inclusion and exclusion in one `$project`
+
+DocumentDB does **not** allow a single `$project` stage to contain both an inclusion
+(e.g. adding a computed field) and an exclusion (e.g. `embedding: 0`).
+
+**This will throw** `Cannot do exclusion on field embedding in inclusion projection`:
+
+```javascript
+// ❌ WRONG — mixes inclusion ({ $meta: ... }) and exclusion (0) in one stage
+{ $project: { similarityScore: { $meta: 'searchScore' }, embedding: 0 } }
+```
+
+**Fix — use two separate stages:**
+
+```javascript
+// ✅ CORRECT
+{ $addFields: { similarityScore: { $meta: 'searchScore' } } },  // add the score
+{ $project: { embedding: 0 } },                                  // then exclude
+```
+
+This pattern applies any time you need both a computed/meta field and an excluded field
+in the same aggregation result.
 
 ---
 
@@ -692,9 +876,11 @@ WHERE document @@ '{"$text": {"$search": "retrieval augmented generation"}}';
 - **Discord:** https://aka.ms/documentdb_discord
 - **Docs:** https://documentdb.io/docs
 - **Roadmap:** https://github.com/orgs/microsoft/projects/1407/views/1
+- **File Issues:** https://github.com/documentdb/documentdb/issues?q=is%3Aissue%20state%3Aopen%20label%3Adocumentdb-local
 - **FerretDB integration:** https://github.com/FerretDB/FerretDB (uses DocumentDB as backend)
 - **License:** MIT — https://opensource.org/license/mit
 - **Contributing:** See `CONTRIBUTING.md` in the repo
+
 
 ---
 

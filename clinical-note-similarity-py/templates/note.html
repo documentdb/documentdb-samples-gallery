@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ note.note_id }} — {{ note.diagnosis }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Clinical Note Similarity Explorer</h1>
+      <p class="subtitle">Find similar cases using natural language</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="disclaimer">
+      <strong>Sample Data Only</strong> — This note is fictional and de-identified. For demonstration purposes only.
+    </div>
+
+    <a href="/" class="back-link">← Back to search</a>
+
+    <div class="note-detail">
+      <div class="note-detail-header">
+        <div class="note-detail-title-row">
+          <span class="note-id-large">{{ note.note_id }}</span>
+          <span class="specialty-badge specialty-{{ note.specialty | lower | replace(' ', '-') }}">
+            {{ note.specialty }}
+          </span>
+          <span class="outcome outcome-{{ note.outcome }}">{{ note.outcome }}</span>
+        </div>
+        <h2>{{ note.diagnosis }}</h2>
+        <div class="note-detail-meta">
+          <span>Age group: <strong>{{ note.age_group }}</strong></span>
+          <span class="dot">·</span>
+          <span>Sex: <strong>{{ note.sex }}</strong></span>
+          <span class="dot">·</span>
+          <span>ICD-10: <strong>{{ note.icd_code }}</strong></span>
+        </div>
+      </div>
+
+      <div class="note-section">
+        <h3>Chief Complaint</h3>
+        <p>{{ note.chief_complaint }}</p>
+      </div>
+
+      <div class="note-section">
+        <h3>Clinical Note</h3>
+        <p class="note-full-text">{{ note.clinical_note }}</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Built with <a href="https://github.com/microsoft/documentdb" target="_blank" rel="noopener noreferrer">DocumentDB OSS</a> · Embeddings by <a href="https://ollama.com" target="_blank" rel="noopener noreferrer">Ollama</a> · Sample data only — not for clinical use</p>
+  </footer>
+</body>
+</html>
