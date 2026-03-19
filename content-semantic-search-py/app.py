@@ -7,11 +7,23 @@ load_dotenv()
 from flask import Flask, render_template, request
 from utils.db import get_client, get_collection
 from utils.embeddings import get_embedding
+import logging
 
 app = Flask(__name__)
 
+DEFAULT_NUM_RESULTS = 5
+
 _client = None
 _col = None
+
+
+@app.teardown_appcontext
+def close_mongo_client(exception=None):
+    global _client, _col
+    if _client is not None:
+        _client.close()
+        _client = None
+        _col = None
 
 
 def get_col():
@@ -70,7 +82,13 @@ def index():
 def search():
     query = request.form.get("query", "").strip()
     content_type = request.form.get("content_type", "all")
-    num_results = int(request.form.get("num_results", 5))
+    raw_num_results = request.form.get("num_results", "")
+    try:
+        num_results = int(raw_num_results)
+        if num_results <= 0:
+            num_results = DEFAULT_NUM_RESULTS
+    except (TypeError, ValueError):
+        num_results = DEFAULT_NUM_RESULTS
     content_types = get_content_types()
 
     results = []
@@ -80,7 +98,8 @@ def search():
         try:
             results = semantic_search(query, content_type, num_results)
         except Exception as e:
-            error = str(e)
+            logging.exception("Error during semantic search for query %r", query)
+            error = "An error occurred while processing your search. Please try again later."
 
     return render_template(
         "index.html",

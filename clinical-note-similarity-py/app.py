@@ -22,6 +22,15 @@ def get_col():
     return _col
 
 
+@app.teardown_appcontext
+def close_mongo_client(exception):
+    global _client, _col
+    if _client is not None:
+        _client.close()
+        _client = None
+        _col = None
+
+
 def similarity_search(query: str, specialty: str, num_results: int) -> list:
     col = get_col()
     k = num_results if specialty == "all" else num_results * 4
@@ -80,7 +89,8 @@ def search():
         try:
             results = similarity_search(query, specialty, num_results)
         except Exception as e:
-            error = str(e)
+            app.logger.exception("Error during similarity search")
+            error = "An unexpected error occurred while processing your request. Please try again later."
 
     return render_template(
         "index.html",

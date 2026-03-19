@@ -124,8 +124,11 @@ def ingest_file(col, client, file_path: str, title: str, content_type: str, tags
     col_name = os.getenv("DOCUMENTDB_COLLECTION", "articles")
     try:
         create_vector_index(client, db_name, col_name)
-    except Exception:
-        pass  # index may already exist
+    except Exception as exc:
+        # Ignore the expected "index already exists" case, surface others
+        message = str(exc).lower()
+        if "already exists" not in message:
+            raise
 
 
 def main():
