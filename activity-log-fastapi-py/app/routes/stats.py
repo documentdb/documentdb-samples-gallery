@@ -12,7 +12,7 @@ async def get_stats(
     window_minutes: int = Query(default=60, ge=1),
 ) -> dict:
     cutoff = datetime.now(timezone.utc) - timedelta(minutes=window_minutes)
-    collection = Activity.get_motor_collection()
+    collection = Activity.get_collection()
 
     # Run a single aggregation pass on DocumentDB using $facet to compute both
     # breakdowns (by_level and by_action) without a second round-trip.

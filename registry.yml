@@ -97,14 +97,14 @@ samples:
 
   - id: activity-log-fastapi-py
     title: "Activity Log & Notification Service: Real-Time Event Ingestion with FastAPI, Beanie, and DocumentDB"
-    description: "A production-style async Python backend that ingests high-volume activity events via FastAPI, stores them in DocumentDB using the Beanie ODM over Motor, and exposes endpoints to query recent activities, compute server-side aggregation statistics ($facet pipeline), and stream real-time ERROR alerts to clients over WebSockets."
+    description: "A production-style async Python backend that ingests high-volume activity events via FastAPI, stores them in DocumentDB using the Beanie ODM (backed by PyMongo async), and exposes endpoints to query recent activities, compute server-side aggregation statistics ($facet pipeline), and stream real-time ERROR alerts to clients over WebSockets."
     language: Python
     industry: DevOps / Observability
     difficulty: Intermediate
     tags:
       - FastAPI
       - Beanie
-      - Motor
+      - PyMongo
       - REST API
       - WebSocket
       - Aggregation
