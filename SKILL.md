@@ -66,7 +66,57 @@ You can interact via:
 
 ## 1. Spinning Up DocumentDB
 
-### Option A — Fastest: Prebuilt Docker Image with Gateway (Recommended for Development)
+### Option A — Docker Compose (Recommended for Sample Projects)
+
+The cleanest way to run DocumentDB alongside your app in a sample. Create a
+`docker-compose.yml` at the root of your project:
+
+```yaml
+version: "3.8"
+
+services:
+  documentdb:
+    image: ghcr.io/microsoft/documentdb/documentdb-local:latest
+    ports:
+      - "10260:10260"
+    environment:
+      - USERNAME=docdbuser
+      - PASSWORD=Admin100!
+    restart: unless-stopped
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - documentdb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+```
+
+Start everything together:
+
+```bash
+docker compose up -d
+```
+
+Stop and remove containers:
+
+```bash
+docker compose down
+```
+
+If your sample is app-only (DocumentDB runs separately), include just the `documentdb`
+service and omit the `app` service. Your connection string should then point to
+`host.docker.internal:10260` from inside other containers, or `localhost:10260` from
+the host machine.
+
+---
+
+### Option B — Fastest: Prebuilt Docker Image with Gateway (Recommended for Development)
 
 This gives you a full MongoDB-compatible endpoint with no build step.
 
@@ -567,13 +617,24 @@ pg_documentdb_gw/
 
 ### Connecting via Standard MongoDB Driver (Node.js)
 
+The full connection string must include `tls`, `tlsAllowInvalidCertificates`, and
+`authMechanism=SCRAM-SHA-256`. The bare `mongodb://localhost:10260` form will fail
+authentication against the DocumentDB Gateway in practice.
+
 ```javascript
 const { MongoClient } = require('mongodb');
 
+// Option A — connection string (recommended: all params in one place)
+const client = new MongoClient(
+  'mongodb://myuser:mypassword@localhost:10260/?tls=true&tlsAllowInvalidCertificates=true&authMechanism=SCRAM-SHA-256'
+);
+
+// Option B — options object
 const client = new MongoClient('mongodb://localhost:10260', {
   auth: { username: 'myuser', password: 'mypassword' },
   tls: true,
-  tlsAllowInvalidCertificates: true, // dev only
+  tlsAllowInvalidCertificates: true, // dev only — use a valid cert in production
+  authMechanism: 'SCRAM-SHA-256',
 });
 
 await client.connect();
@@ -599,11 +660,7 @@ await users.deleteOne({ name: 'Alice' });
 from pymongo import MongoClient
 
 client = MongoClient(
-    'mongodb://localhost:10260',
-    username='myuser',
-    password='mypassword',
-    tls=True,
-    tlsAllowInvalidCertificates=True  # dev only
+    'mongodb://myuser:mypassword@localhost:10260/?tls=true&tlsAllowInvalidCertificates=true&authMechanism=SCRAM-SHA-256'
 )
 
 db = client['mydb']
