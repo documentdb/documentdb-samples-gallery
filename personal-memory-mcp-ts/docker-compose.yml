@@ -3,8 +3,6 @@ services:
     image: ghcr.io/documentdb/documentdb/documentdb-local:latest
     ports:
       - "127.0.0.1:10260:10260"
-    volumes:
-      - documentdb-data:/data/db
     environment:
       - USERNAME=admin
       - PASSWORD=documentdb
@@ -13,8 +11,5 @@ services:
       test: ["CMD", "pg_isready", "-h", "localhost", "-p", "9712"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 30s
-
-volumes:
-  documentdb-data:
+      retries: 30
+      start_period: 60s
