@@ -197,9 +197,9 @@ npm run build
 npm start
 ```
 
-### Option B: Azure Cosmos DB for MongoDB (vCore)
+### Option B: Azure VM with DocumentDB OSS
 
-Deploy to Azure with a single script — uses the **free tier** (lifetime free, 32 GB, no credit card charges):
+Deploy DocumentDB OSS on an Azure VM with a single script:
 
 #### 1. Prerequisites
 
@@ -214,8 +214,9 @@ bash scripts/deploy-azure.sh
 
 This creates:
 - A resource group (`personal-memory-rg`)
-- A Cosmos DB for MongoDB vCore cluster (free tier)
-- A firewall rule for your current IP
+- An Ubuntu VM with Docker installed (`Standard_B2s`)
+- DocumentDB OSS running in a container on port `10260`
+- A network rule opening port `10260`
 
 The script outputs a `DOCUMENTDB_URI` — copy it to your `.env` file.
 
@@ -223,10 +224,10 @@ You can customize the deployment:
 
 ```bash
 bash scripts/deploy-azure.sh \
-  --cluster-name my-memory \
+  --vm-name my-docdb \
   --resource-group my-rg \
   --location westus \
-  --tier Free
+  --vm-size Standard_B2s
 ```
 
 #### 3. Install, configure, and start

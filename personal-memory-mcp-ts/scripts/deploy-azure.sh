@@ -2,15 +2,15 @@
 set -euo pipefail
 
 ###############################################################################
-# deploy-azure.sh — Deploy Azure Cosmos DB for MongoDB (vCore) cluster
+# deploy-azure.sh — Deploy DocumentDB OSS on an Azure VM
 #
-# Creates a resource group, a MongoDB vCore cluster (free tier by default),
-# configures a firewall rule for your current IP, and outputs the connection
+# Creates a resource group, an Ubuntu VM, installs Docker, pulls and runs
+# the DocumentDB local image, opens port 10260, and outputs the connection
 # string ready for .env.
 #
 # Usage:
 #   bash scripts/deploy-azure.sh
-#   bash scripts/deploy-azure.sh --cluster-name my-memory --location eastus
+#   bash scripts/deploy-azure.sh --vm-name my-docdb --location westus
 #
 # Prerequisites:
 #   - Azure CLI (az) installed and logged in: az login
@@ -19,41 +19,50 @@ set -euo pipefail
 
 # Defaults (override via environment variables or flags)
 RESOURCE_GROUP="${RESOURCE_GROUP:-personal-memory-rg}"
-CLUSTER_NAME="${CLUSTER_NAME:-personal-memory-docdb}"
+VM_NAME="${VM_NAME:-docdb-vm}"
 LOCATION="${LOCATION:-eastus}"
+VM_SIZE="${VM_SIZE:-Standard_B2s}"
 ADMIN_USER="${ADMIN_USER:-memadmin}"
 ADMIN_PASSWORD="${ADMIN_PASSWORD:-}"
-TIER="${TIER:-Free}"
+DB_USER="${DB_USER:-docdbadmin}"
+DB_PASSWORD="${DB_PASSWORD:-}"
 DB_NAME="${DB_NAME:-personal_memory}"
+IMAGE="${IMAGE:-ghcr.io/documentdb/documentdb/documentdb-local:latest}"
 
 # Parse optional flags
 while [[ $# -gt 0 ]]; do
   case $1 in
     --resource-group) RESOURCE_GROUP="$2"; shift 2 ;;
-    --cluster-name)   CLUSTER_NAME="$2"; shift 2 ;;
+    --vm-name)        VM_NAME="$2"; shift 2 ;;
     --location)       LOCATION="$2"; shift 2 ;;
+    --vm-size)        VM_SIZE="$2"; shift 2 ;;
     --admin-user)     ADMIN_USER="$2"; shift 2 ;;
     --admin-password) ADMIN_PASSWORD="$2"; shift 2 ;;
-    --tier)           TIER="$2"; shift 2 ;;
+    --db-user)        DB_USER="$2"; shift 2 ;;
+    --db-password)    DB_PASSWORD="$2"; shift 2 ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
 done
 
-# Generate a password if not provided
+# Generate passwords if not provided
 if [[ -z "$ADMIN_PASSWORD" ]]; then
-  ADMIN_PASSWORD="P$(openssl rand -base64 16 | tr -dc 'A-Za-z0-9' | head -c 16)!"
-  echo "🔑 Generated admin password (save this!): $ADMIN_PASSWORD"
+  ADMIN_PASSWORD="V$(openssl rand -base64 16 | tr -dc 'A-Za-z0-9' | head -c 14)1!"
+fi
+if [[ -z "$DB_PASSWORD" ]]; then
+  DB_PASSWORD="D$(openssl rand -base64 16 | tr -dc 'A-Za-z0-9' | head -c 14)1!"
+  echo "🔑 Generated DocumentDB password (save this!): $DB_PASSWORD"
 fi
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  Azure Cosmos DB for MongoDB (vCore) — Deployment"
+echo "  DocumentDB OSS on Azure VM — Deployment"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Resource Group : $RESOURCE_GROUP"
-echo "  Cluster Name   : $CLUSTER_NAME"
+echo "  VM Name        : $VM_NAME"
+echo "  VM Size        : $VM_SIZE"
 echo "  Location       : $LOCATION"
-echo "  Admin User     : $ADMIN_USER"
-echo "  Tier           : $TIER"
+echo "  DB User        : $DB_USER"
 echo "  Database       : $DB_NAME"
+echo "  Image          : $IMAGE"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Step 1: Ensure az is logged in
@@ -75,71 +84,89 @@ az group create \
   --output none
 echo "✅ Resource group ready"
 
-# Step 3: Create the MongoDB vCore cluster
+# Step 3: Create cloud-init script
+CLOUD_INIT=$(cat <<EOF
+#!/bin/bash
+set -e
+
+# Install Docker
+apt-get update -y
+apt-get install -y docker.io
+systemctl enable --now docker
+
+# Pull and run DocumentDB
+docker run -dt \
+  --name documentdb \
+  --restart unless-stopped \
+  -p 10260:10260 \
+  -e USERNAME=${DB_USER} \
+  -e PASSWORD=${DB_PASSWORD} \
+  ${IMAGE}
+EOF
+)
+
+CLOUD_INIT_FILE=$(mktemp)
+echo "$CLOUD_INIT" > "$CLOUD_INIT_FILE"
+
+# Step 4: Create the VM
 echo ""
-echo "⏳ Creating MongoDB vCore cluster '$CLUSTER_NAME' (tier: $TIER)..."
-echo "   This may take 5-10 minutes..."
-az cosmosdb mongocluster create \
-  --cluster-name "$CLUSTER_NAME" \
+echo "⏳ Creating VM '$VM_NAME' ($VM_SIZE)..."
+echo "   This may take 2-3 minutes..."
+PUBLIC_IP=$(az vm create \
   --resource-group "$RESOURCE_GROUP" \
-  --location "$LOCATION" \
-  --administrator-login "$ADMIN_USER" \
-  --administrator-login-password "$ADMIN_PASSWORD" \
-  --server-version "7.0" \
-  --shard-node-tier "$TIER" \
-  --shard-node-disk-size-gb 32 \
-  --shard-node-count 1 \
+  --name "$VM_NAME" \
+  --image "Canonical:ubuntu-24_04-lts:server:latest" \
+  --size "$VM_SIZE" \
+  --admin-username "$ADMIN_USER" \
+  --admin-password "$ADMIN_PASSWORD" \
+  --custom-data "$CLOUD_INIT_FILE" \
+  --public-ip-sku Standard \
+  --query publicIpAddress -o tsv)
+
+rm -f "$CLOUD_INIT_FILE"
+echo "✅ VM created — public IP: $PUBLIC_IP"
+
+# Step 5: Open port 10260 for DocumentDB gateway
+echo ""
+echo "⏳ Opening port 10260 (DocumentDB gateway)..."
+az vm open-port \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$VM_NAME" \
+  --port 10260 \
+  --priority 1010 \
   --output none
-echo "✅ Cluster created"
+echo "✅ Port 10260 open"
 
-# Step 4: Add firewall rule for current IP
+# Step 6: Wait for DocumentDB to be ready
 echo ""
-echo "⏳ Detecting your public IP..."
-MY_IP=$(curl -s https://ifconfig.me || curl -s https://api.ipify.org || echo "")
-if [[ -z "$MY_IP" ]]; then
-  echo "⚠️  Could not detect public IP. Add a firewall rule manually:"
-  echo "   az cosmosdb mongocluster firewall rule create \\"
-  echo "     --cluster-name $CLUSTER_NAME --resource-group $RESOURCE_GROUP \\"
-  echo "     --rule-name allowMyIP --start-ip-address <YOUR_IP> --end-ip-address <YOUR_IP>"
-else
-  echo "   Your IP: $MY_IP"
-  az cosmosdb mongocluster firewall rule create \
-    --cluster-name "$CLUSTER_NAME" \
+echo "⏳ Waiting for DocumentDB to start (may take 1-2 minutes for Docker pull)..."
+READY=false
+for i in $(seq 1 30); do
+  if az vm run-command invoke \
     --resource-group "$RESOURCE_GROUP" \
-    --rule-name "dev-machine" \
-    --start-ip-address "$MY_IP" \
-    --end-ip-address "$MY_IP" \
-    --output none
-  echo "✅ Firewall rule added for $MY_IP"
+    --name "$VM_NAME" \
+    --command-id RunShellScript \
+    --scripts "docker ps --filter name=documentdb --filter status=running -q" \
+    --query "value[0].message" -o tsv 2>/dev/null | grep -q '[a-f0-9]'; then
+    READY=true
+    break
+  fi
+  echo "   Attempt $i/30 — waiting 20s..."
+  sleep 20
+done
+
+if [[ "$READY" == "true" ]]; then
+  echo "✅ DocumentDB is running"
+else
+  echo "⚠️  DocumentDB may still be starting. Check with:"
+  echo "   az vm run-command invoke --resource-group $RESOURCE_GROUP --name $VM_NAME \\"
+  echo "     --command-id RunShellScript --scripts 'docker ps'"
 fi
 
-# Step 5: Get the cluster endpoint
-echo ""
-echo "⏳ Retrieving cluster endpoint..."
-FQDN=$(az cosmosdb mongocluster show \
-  --cluster-name "$CLUSTER_NAME" \
-  --resource-group "$RESOURCE_GROUP" \
-  --query "connectionString" -o tsv 2>/dev/null || \
-  az cosmosdb mongocluster show \
-    --cluster-name "$CLUSTER_NAME" \
-    --resource-group "$RESOURCE_GROUP" \
-    --query "properties.connectionString" -o tsv 2>/dev/null || echo "")
+# Step 7: Build connection string
+CONNECTION_STRING="mongodb://${DB_USER}:${DB_PASSWORD}@${PUBLIC_IP}:10260/${DB_NAME}?tls=true&tlsAllowInvalidCertificates=true&authMechanism=SCRAM-SHA-256&directConnection=true"
 
-# If connectionString is not available, build it from FQDN
-if [[ -z "$FQDN" || "$FQDN" == "None" ]]; then
-  FQDN=$(az cosmosdb mongocluster show \
-    --cluster-name "$CLUSTER_NAME" \
-    --resource-group "$RESOURCE_GROUP" \
-    --query "properties.serverVersion" -o tsv 2>/dev/null || echo "")
-  # Fallback: construct from cluster name
-  ENDPOINT="${CLUSTER_NAME}.mongocluster.cosmos.azure.com"
-  CONNECTION_STRING="mongodb+srv://${ADMIN_USER}:${ADMIN_PASSWORD}@${ENDPOINT}/${DB_NAME}?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
-else
-  # Use the returned connection string, inject credentials and DB
-  CONNECTION_STRING=$(echo "$FQDN" | sed "s|mongodb+srv://|mongodb+srv://${ADMIN_USER}:${ADMIN_PASSWORD}@|" | sed "s|/?|/${DB_NAME}?|")
-fi
-
-# Step 6: Output results
+# Step 8: Output results
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  ✅ Deployment Complete!"
@@ -150,12 +177,16 @@ echo ""
 echo "  DOCUMENTDB_URI=$CONNECTION_STRING"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  Admin User     : $ADMIN_USER"
-echo "  Admin Password : $ADMIN_PASSWORD"
-echo "  Cluster        : $CLUSTER_NAME"
+echo "  VM Public IP   : $PUBLIC_IP"
+echo "  VM Admin User  : $ADMIN_USER"
+echo "  DB User        : $DB_USER"
+echo "  DB Password    : $DB_PASSWORD"
 echo "  Resource Group : $RESOURCE_GROUP"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "  To tear down all resources:"
+echo "  SSH into the VM:"
+echo "    ssh $ADMIN_USER@$PUBLIC_IP"
+echo ""
+echo "  Tear down all resources:"
 echo "    az group delete --name $RESOURCE_GROUP --yes --no-wait"
 echo ""
