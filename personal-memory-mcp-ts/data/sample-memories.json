@@ -1,0 +1,50 @@
+[
+  {
+    "content": "Full name is Jane Smith, preferred name Jane",
+    "category": "fact",
+    "importance": "high",
+    "tags": ["identity", "name"]
+  },
+  {
+    "content": "Lives in Seattle, WA, USA (Pacific Time)",
+    "category": "fact",
+    "importance": "high",
+    "tags": ["location", "seattle", "timezone"]
+  },
+  {
+    "content": "Software engineer working on cloud infrastructure and databases",
+    "category": "fact",
+    "importance": "high",
+    "tags": ["career", "engineering", "databases"]
+  },
+  {
+    "content": "Prefers concise, clear responses with code examples when possible",
+    "category": "instruction",
+    "importance": "high",
+    "tags": ["communication", "style", "instruction"]
+  },
+  {
+    "content": "Enjoys hiking, photography, and reading science fiction on weekends",
+    "category": "preference",
+    "importance": "low",
+    "tags": ["hobbies", "hiking", "photography", "reading"]
+  },
+  {
+    "content": "Uses TypeScript and Python daily, prefers TypeScript for backend services",
+    "category": "preference",
+    "importance": "medium",
+    "tags": ["programming", "typescript", "python", "preferences"]
+  },
+  {
+    "content": "Working on migrating a legacy MongoDB deployment to DocumentDB",
+    "category": "fact",
+    "importance": "medium",
+    "tags": ["work", "mongodb", "documentdb", "migration"]
+  },
+  {
+    "content": "Adopted a golden retriever named Luna in March 2026",
+    "category": "event",
+    "importance": "medium",
+    "tags": ["pet", "dog", "luna"]
+  }
+]
