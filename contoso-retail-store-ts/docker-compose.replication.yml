@@ -1,0 +1,24 @@
+services:
+  onprem-hq:
+    image: ghcr.io/microsoft/documentdb/documentdb-local:latest
+    container_name: docdb-onprem-hq
+    ports:
+      - "10261:10260"
+    environment:
+      - USERNAME=docdbuser
+      - PASSWORD=documentdb
+    profiles:
+      - hq
+    restart: unless-stopped
+
+  onprem-warehouse:
+    image: ghcr.io/microsoft/documentdb/documentdb-local:latest
+    container_name: docdb-onprem-warehouse
+    ports:
+      - "10262:10260"
+    environment:
+      - USERNAME=docdbuser
+      - PASSWORD=documentdb
+    profiles:
+      - warehouse
+    restart: unless-stopped

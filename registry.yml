@@ -129,3 +129,22 @@ samples:
       - DocumentDB OSS
       - Open Source
     githubUrl: "https://github.com/documentdb/documentdb-samples-gallery/tree/main/activity-log-fastapi-py"
+
+  - id: contoso-retail-store-ts
+    title: "Contoso Retail: Hybrid Cloud/Edge Store with Live DB Switching, Replication, and Vector Search"
+    description: "A TypeScript/Express retail application that runs the same code against Azure DocumentDB (managed cloud) and OSS DocumentDB (local containers) — switchable in real time from the UI. Features product catalog with vector similarity recommendations (Ollama + nomic-embed-text), inventory management across 3 warehouses, order processing with sync-to-Azure, and live hybrid replication with animated latency visualization. Built for the talk: 'One Codebase, Any Cloud: Building a Retail Database with OSS and Azure DocumentDB'."
+    language: TypeScript
+    industry: Retail
+    difficulty: Intermediate
+    tags:
+      - Vector Search
+      - Hybrid Cloud
+      - Replication
+      - Express
+      - Ollama
+      - Embeddings
+      - DocumentDB OSS
+      - Azure DocumentDB
+      - Docker
+      - Full Stack
+    githubUrl: "https://github.com/documentdb/documentdb-samples-gallery/tree/main/contoso-retail-store-ts"
