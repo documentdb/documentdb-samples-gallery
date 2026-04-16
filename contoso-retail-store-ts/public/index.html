@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contoso Retail — DocumentDB Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   Contoso Retail — Production Design System
+   ═══════════════════════════════════════════ */
+:root {
+  --bg: #08090d;
+  --bg-subtle: #0d0f15;
+  --surface: #12141c;
+  --surface2: #1a1d28;
+  --surface3: #222633;
+  --border: #1e2235;
+  --border-hover: #2e3450;
+  --text: #eaecf0;
+  --text-secondary: #a0a6b8;
+  --text-dim: #636b82;
+  --azure: #2b7fff;
+  --azure-bright: #5b9fff;
+  --azure-dim: rgba(43,127,255,.10);
+  --azure-glow: rgba(43,127,255,.25);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,.10);
+  --red: #f43f5e;
+  --red-dim: rgba(244,63,94,.10);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,.10);
+  --violet: #a78bfa;
+  --violet-dim: rgba(167,139,250,.10);
+  --font: "Space Grotesk", system-ui, sans-serif;
+  --mono: "JetBrains Mono", "Cascadia Code", monospace;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.5);
+  --shadow-glow: 0 0 40px rgba(43,127,255,.08);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(43,127,255,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(167,139,250,.04) 0%, transparent 50%);
+}
+button { cursor:pointer; font-family:var(--font); }
+input,select { font-family:var(--font); outline:none; }
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity:1; transform:scale(1); }
+  50% { opacity:.6; transform:scale(1.4); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Top Bar ── */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 32px;
+  background: rgba(18,20,28,.85);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  animation: fadeIn .5s ease;
+}
+.wordmark {
+  font-size:20px; font-weight:700; letter-spacing:-0.6px;
+  background: linear-gradient(135deg, var(--azure-bright), var(--violet));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.conn-badge {
+  display:flex; align-items:center; gap:10px; font-size:13px; font-weight:500;
+  padding:8px 18px; border-radius:24px;
+  background: var(--surface2); border: 1px solid var(--border);
+  transition: all .3s ease;
+}
+.conn-badge .dot {
+  width:8px; height:8px; border-radius:50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.conn-badge.local .dot { background:var(--green); box-shadow:0 0 8px var(--green); }
+.conn-badge.azure .dot { background:var(--azure); box-shadow:0 0 8px var(--azure); }
+.conn-badge .latency { color:var(--text-dim); font-size:11px; font-family:var(--mono); }
+
+/* ── Tabs ── */
+.tabs {
+  display:flex; gap:0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  animation: fadeIn .5s ease .1s both;
+}
+.tab {
+  padding: 14px 24px; font-size: 14px; font-weight: 500; color: var(--text-dim);
+  border: none; background: none; border-bottom: 2px solid transparent;
+  transition: all .25s ease; position: relative;
+  letter-spacing: 0.01em;
+}
+.tab:hover { color: var(--text-secondary); }
+.tab.active {
+  color: var(--azure-bright);
+  border-bottom-color: var(--azure);
+}
+.tab.active::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 20%; right: 20%;
+  height: 2px; border-radius: 1px;
+  background: var(--azure);
+  filter: blur(4px);
+}
+
+/* ── Panels ── */
+.panel {
+  display: none; padding: 32px;
+  max-width: 1280px; margin: 0 auto;
+}
+.panel.active {
+  display: block;
+  animation: fadeUp .4s ease;
+}
+
+/* ── Section Headers ── */
+.section-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--text-dim); margin-bottom: 16px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+.card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* ── Badges ── */
+.badge {
+  display:inline-block; padding:3px 12px; border-radius:20px; font-size:11px;
+  font-weight:600; text-transform:uppercase; letter-spacing:0.04em;
+}
+.badge.Electronics { background: rgba(59,130,246,.12); color:#60a5fa; }
+.badge.Apparel { background: rgba(168,85,247,.12); color:#c084fc; }
+.badge.Home { background: rgba(245,158,11,.12); color:#fbbf24; }
+.badge.Sports { background: rgba(16,185,129,.12); color:#34d399; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 9px 18px; border-radius: var(--radius-sm); border: none;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
+  transition: all .2s ease;
+}
+.btn-primary {
+  background: var(--azure); color: #fff;
+  box-shadow: 0 2px 8px rgba(43,127,255,.25);
+}
+.btn-primary:hover {
+  background: var(--azure-bright);
+  box-shadow: 0 4px 16px rgba(43,127,255,.35);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-danger { background: var(--red); color: #fff; box-shadow: 0 2px 8px rgba(244,63,94,.2); }
+.btn-danger:hover { background: #fb7185; box-shadow: 0 4px 16px rgba(244,63,94,.3); transform: translateY(-1px); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-outline {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.btn-outline:hover { border-color: var(--azure); color: var(--azure); background: var(--azure-dim); }
+
+/* ── Products ── */
+.search-bar { display:flex; gap:10px; margin-bottom:16px; }
+.search-bar input {
+  flex:1; padding:12px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-size: 14px;
+  transition: border-color .25s, box-shadow .25s;
+}
+.search-bar input:focus {
+  border-color: var(--azure);
+  box-shadow: 0 0 0 3px var(--azure-dim);
+}
+.search-bar input::placeholder { color: var(--text-dim); }
+
+.chips { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+.chip {
+  padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-dim); font-size: 12px;
+  font-weight: 500; cursor: pointer;
+  transition: all .2s ease;
+}
+.chip:hover {
+  border-color: var(--border-hover); color: var(--text-secondary);
+  background: var(--surface2);
+}
+.chip.active {
+  border-color: var(--azure); color: var(--azure-bright);
+  background: var(--azure-dim);
+  box-shadow: 0 0 12px rgba(43,127,255,.1);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.product-card {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.product-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(43,127,255,.03), transparent 60%);
+  opacity: 0; transition: opacity .3s;
+  border-radius: var(--radius);
+  pointer-events: none;
+}
+.product-card:hover::before { opacity: 1; }
+.product-card .name {
+  font-size: 15px; font-weight: 600; margin: 10px 0 6px;
+  line-height: 1.3;
+}
+.product-card .desc {
+  font-size: 13px; color: var(--text-dim); line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.product-card .price {
+  font-size: 18px; font-weight: 700; color: var(--green); margin-top: 10px;
+  font-family: var(--mono);
+}
+.pagination { display:flex; justify-content:center; gap:8px; margin-top:24px; }
+
+/* ── Drawer ── */
+.drawer-overlay {
+  display:none; position:fixed; inset:0;
+  background: rgba(8,9,13,.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 200;
+}
+.drawer-overlay.open { display:block; }
+.drawer {
+  position:fixed; top:0; right:0; width:440px; max-width:90vw; height:100vh;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  z-index: 201;
+  overflow-y: auto; padding: 28px;
+  transform: translateX(100%); transition: transform .35s cubic-bezier(.4,0,.2,1);
+  box-shadow: -8px 0 32px rgba(0,0,0,.4);
+}
+.drawer-overlay.open .drawer { transform: translateX(0); }
+.drawer h3 {
+  font-size: 18px; font-weight: 700; margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.rec-scroll { display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; }
+.rec-chip {
+  flex-shrink:0; width:190px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px; font-size: 12px;
+  transition: border-color .2s, transform .2s;
+}
+.rec-chip:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.rec-chip .sim { color: var(--azure-bright); font-weight: 600; font-family: var(--mono); font-size: 13px; }
+.drawer-close {
+  position:absolute; top:14px; right:14px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-dim); font-size: 18px;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.drawer-close:hover { border-color: var(--red); color: var(--red); }
+
+/* ── Inventory ── */
+.inv-controls {
+  display:flex; gap:14px; margin-bottom:20px; align-items:center;
+}
+.inv-controls label {
+  font-size: 13px; font-weight: 600; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.inv-controls select {
+  padding: 10px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-size: 14px;
+  transition: border-color .25s;
+  min-width: 280px;
+}
+.inv-controls select:focus { border-color: var(--azure); box-shadow: 0 0 0 3px var(--azure-dim); }
+
+table { width: 100%; border-collapse: collapse; }
+th, td {
+  padding: 12px 16px; text-align: left;
+  border-bottom: 1px solid var(--border); font-size: 13px;
+}
+th {
+  color: var(--text-dim); font-weight: 600;
+  text-transform: uppercase; font-size: 11px;
+  letter-spacing: 0.08em;
+}
+tr { transition: background .15s; }
+tbody tr:hover { background: rgba(43,127,255,.03); }
+.status-ok { color: var(--green); font-weight: 600; }
+.status-low { color: var(--red); font-weight: 600; }
+.adj-btn {
+  width: 30px; height: 30px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-size: 14px; font-weight: 700;
+  transition: all .2s;
+}
+.adj-btn:hover {
+  border-color: var(--azure); color: var(--azure);
+  background: var(--azure-dim);
+}
+
+/* ── Orders ── */
+.orders-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+@media(max-width:768px) { .orders-layout { grid-template-columns: 1fr; } }
+.order-form h3 {
+  font-size: 16px; font-weight: 700; margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+.order-form .prod-list {
+  max-height: 320px; overflow-y: auto; margin-bottom: 16px;
+  padding-right: 4px;
+}
+.order-form .prod-list::-webkit-scrollbar { width: 4px; }
+.order-form .prod-list::-webkit-scrollbar-track { background: transparent; }
+.order-form .prod-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.prod-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; font-size: 13px;
+  border-bottom: 1px solid rgba(30,34,53,.5);
+  transition: background .15s;
+}
+.prod-item:hover { background: rgba(43,127,255,.03); }
+.prod-item input[type=checkbox] { accent-color: var(--azure); }
+.status-badge { cursor:pointer; }
+.status-badge.pending { background: var(--amber-dim); color: var(--amber); }
+.status-badge.confirmed { background: var(--azure-dim); color: var(--azure); }
+.status-badge.shipped { background: var(--violet-dim); color: var(--violet); }
+.status-badge.delivered { background: var(--green-dim); color: var(--green); }
+.status-badge.cancelled { background: var(--red-dim); color: var(--red); }
+
+/* ── Replication ── */
+.repl-cards {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 24px;
+}
+@media(max-width:768px) { .repl-cards { grid-template-columns: 1fr; } }
+.repl-card {
+  border-radius: var(--radius-lg); padding: 24px;
+  background: var(--surface); text-align: center;
+  transition: all .35s cubic-bezier(.4,0,.2,1);
+  min-height: 240px; display: flex; flex-direction: column;
+  justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+.repl-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent;
+  transition: background .4s;
+}
+.repl-card.primary { border: 1px solid rgba(43,127,255,.3); }
+.repl-card.primary::before { background: linear-gradient(90deg, var(--azure), var(--azure-bright)); }
+.repl-card.offline { border: 1px dashed var(--border); }
+.repl-card.pending { border: 1px dashed var(--amber); }
+.repl-card.pending::before { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+.repl-card.connected { border: 1px solid rgba(34,197,94,.3); }
+.repl-card.connected::before { background: linear-gradient(90deg, var(--green), #4ade80); }
+.repl-card .icon { font-size: 32px; margin-bottom: 10px; }
+.repl-card .label { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+.repl-card .sublabel { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.repl-card .status-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px;
+}
+.repl-card .status-text { font-size: 13px; margin: 12px 0; font-weight: 500; }
+.repl-card .lag { font-size: 12px; color: var(--text-dim); font-family: var(--mono); }
+.repl-card .port { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-family: var(--mono); }
+.progress-log {
+  background: var(--bg); border-radius: var(--radius-sm); padding: 12px;
+  font-family: var(--mono); font-size: 11px; color: var(--green);
+  max-height: 100px; overflow-y: auto;
+  text-align: left; margin-top: 10px; display: none;
+  border: 1px solid var(--border);
+}
+.progress-log.visible { display: block; }
+
+.repl-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+  padding: 16px 0; border-top: 1px solid var(--border);
+}
+.repl-footer .consistency { font-size: 13px; color: var(--text-dim); }
+.repl-footer .consistency strong { color: var(--text); }
+
+/* ── Write Test Timeline ── */
+.timeline {
+  display: none; margin-top: 24px; padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+}
+.timeline.visible { display: block; animation: fadeUp .3s ease; }
+.timeline-bar {
+  display: flex; align-items: center; gap: 0; height: 48px;
+  position: relative; margin: 20px 0;
+}
+.tl-segment {
+  height: 3px; background: var(--border); flex: 1; position: relative;
+  transition: background .6s ease; border-radius: 2px;
+}
+.tl-segment.active {
+  background: linear-gradient(90deg, var(--azure), var(--azure-bright));
+  box-shadow: 0 0 12px rgba(43,127,255,.2);
+}
+.tl-node {
+  width: 14px; height: 14px; border-radius: 50%; background: var(--border);
+  flex-shrink: 0; transition: all .5s cubic-bezier(.4,0,.2,1); position: relative;
+}
+.tl-node.active {
+  background: var(--azure); box-shadow: 0 0 12px var(--azure);
+  transform: scale(1.2);
+}
+.tl-node.done {
+  background: var(--green); box-shadow: 0 0 12px var(--green);
+  transform: scale(1.2);
+}
+.tl-label {
+  position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; white-space: nowrap; color: var(--text-dim);
+  font-family: var(--mono); font-weight: 500;
+  opacity: 0; transition: opacity .4s;
+}
+.tl-node.active .tl-label, .tl-node.done .tl-label { opacity: 1; color: var(--text); }
+.timeline .note {
+  text-align: center; font-size: 12px; color: var(--text-dim); margin-top: 12px;
+}
+
+/* ── Loading & Empty States ── */
+.loading {
+  text-align: center; padding: 48px; color: var(--text-dim);
+}
+.loading::after {
+  content: '';
+  display: block; width: 32px; height: 32px; margin: 12px auto 0;
+  border: 2px solid var(--border);
+  border-top-color: var(--azure);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty { text-align: center; padding: 48px; color: var(--text-dim); }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+/* ── DB Target Dropdown ── */
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.db-target-select {
+  padding: 7px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text); font-size: 13px;
+  font-family: var(--font); font-weight: 500;
+  transition: border-color .25s, box-shadow .25s;
+  cursor: pointer; min-width: 180px;
+}
+.db-target-select:focus {
+  border-color: var(--azure);
+  box-shadow: 0 0 0 3px var(--azure-dim);
+}
+.db-target-select option { background: var(--surface2); color: var(--text); }
+.switching-indicator {
+  display: none; font-size: 11px; color: var(--amber);
+  font-weight: 500; letter-spacing: 0.04em;
+}
+.switching-indicator.visible { display: inline; }
+
+.btn-sync {
+  padding: 7px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text-secondary);
+  font-size: 12px; font-weight: 600; font-family: var(--font);
+  transition: all .25s; white-space: nowrap;
+}
+.btn-sync:hover {
+  border-color: var(--azure); color: var(--azure); background: var(--azure-dim);
+  box-shadow: 0 0 12px rgba(43,127,255,.1);
+}
+.btn-sync:disabled { opacity: .5; pointer-events: none; }
+.btn-sync.syncing {
+  border-color: var(--amber); color: var(--amber);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+/* ── Disaster Mode ── */
+.btn-disaster {
+  padding: 7px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text-secondary);
+  font-size: 12px; font-weight: 600; font-family: var(--font);
+  transition: all .25s; white-space: nowrap;
+}
+.btn-disaster:hover {
+  border-color: var(--red); color: var(--red); background: rgba(239,68,68,.08);
+}
+.btn-disaster.active {
+  border-color: var(--red); color: #fff; background: var(--red);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+.btn-disaster.active:hover {
+  background: #dc2626;
+}
+.sync-status {
+  font-size: 11px; color: var(--text-dim); display: flex; align-items: center; gap: 6px;
+}
+.sync-status .dot-live {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.sync-status .dot-off {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--red);
+}
+.pending-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  background: var(--amber); color: #000; font-size: 10px; font-weight: 700;
+}
+
+/* ── Terminal Log Panel ── */
+.terminal-panel {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
+  background: #0a0b0f;
+  border-top: 1px solid var(--border);
+  transition: height .3s cubic-bezier(.4,0,.2,1);
+  height: 180px;
+  display: flex; flex-direction: column;
+}
+.terminal-panel.collapsed { height: 32px; }
+.terminal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; cursor: pointer; user-select: none;
+}
+.terminal-header:hover { background: var(--surface2); }
+.terminal-title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-dim);
+  display: flex; align-items: center; gap: 8px;
+}
+.terminal-title .term-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.terminal-toggle {
+  background: none; border: none; color: var(--text-dim);
+  font-size: 14px; font-family: var(--mono);
+  padding: 2px 6px;
+}
+.terminal-toggle:hover { color: var(--text); }
+.terminal-body {
+  flex: 1; overflow-y: auto; padding: 8px 16px;
+  font-family: var(--mono); font-size: 12px;
+  line-height: 1.6; color: var(--green);
+}
+.terminal-panel.collapsed .terminal-body { display: none; }
+.terminal-body .log-line { white-space: pre-wrap; word-break: break-all; }
+.terminal-body .log-line.error { color: var(--red); }
+.terminal-body .log-line.warn { color: var(--amber); }
+.terminal-body .log-line.info { color: var(--azure-bright); }
+
+/* Offset body content for terminal */
+body { padding-bottom: 180px; }
+
+/* ── Sync Results Panel ── */
+.sync-results-overlay {
+  position: fixed; inset:0; z-index:999;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(4px);
+  display:flex; align-items:center; justify-content:center;
+  animation: fadeIn .2s ease;
+}
+.sync-results-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 560px; max-height: 70vh;
+  display:flex; flex-direction:column;
+  box-shadow: var(--shadow-lg);
+  animation: fadeUp .3s ease;
+}
+.sync-results-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sync-results-header h3 { font-size:15px; font-weight:600; }
+.sync-results-close {
+  background:none; border:none; color:var(--text-dim); font-size:18px;
+  padding:4px 8px; border-radius:6px;
+}
+.sync-results-close:hover { color:var(--text); background:var(--surface2); }
+.sync-results-body {
+  overflow-y:auto; padding:12px 20px 20px;
+  font-family: var(--mono); font-size:12px;
+}
+.sync-results-body table { width:100%; border-collapse:collapse; }
+.sync-results-body th {
+  text-align:left; padding:6px 8px; color:var(--text-dim);
+  font-size:11px; text-transform:uppercase; letter-spacing:.5px;
+  border-bottom:1px solid var(--border);
+}
+.sync-results-body td {
+  padding:6px 8px; border-bottom:1px solid var(--border);
+  color:var(--text-secondary);
+}
+.sync-results-body tr:last-child td { border-bottom:none; }
+.sync-results-summary {
+  padding:12px 20px; border-top:1px solid var(--border);
+  font-size:13px; color:var(--text-dim); text-align:center;
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top Bar ── -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="wordmark">Contoso Retail</div>
+    <select class="db-target-select" id="dbTargetSelect">
+      <option value="azure">🌐 Global Database</option>
+      <option value="hq">🏢 Seattle Store</option>
+      <option value="warehouse">🏬 Chicago Store</option>
+    </select>
+    <span class="switching-indicator" id="switchingIndicator">SWITCHING...</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="sync-status" id="syncStatus"><span class="dot-live"></span> Live sync</div>
+    <button class="btn btn-disaster" id="disasterBtn">⚡ Simulate Outage</button>
+    <button class="btn btn-sync" id="syncNowBtn">🔄 Sync to Global</button>
+    <button class="btn btn-sync" id="syncFromAzureBtn">⬇️ Pull from Global</button>
+    <div class="conn-badge local" id="connBadge">
+      <span class="dot"></span>
+      <span id="connLabel">LOCAL DocumentDB</span>
+      <span class="latency" id="connLatency"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Tabs ── -->
+<div class="tabs">
+  <button class="tab active" data-tab="products">Products</button>
+  <button class="tab" data-tab="inventory">Inventory</button>
+  <button class="tab" data-tab="orders">Orders</button>
+  <button class="tab" data-tab="replication">Hybrid Replication</button>
+</div>
+
+<!-- ═══════ Products Panel ═══════ -->
+<div class="panel active" id="panel-products">
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search products by name, description, or category...">
+    <button class="btn btn-primary" id="searchBtn">Search</button>
+  </div>
+  <div class="chips" id="categoryChips">
+    <span class="chip active" data-cat="">All</span>
+    <span class="chip" data-cat="Electronics">Electronics</span>
+    <span class="chip" data-cat="Apparel">Apparel</span>
+    <span class="chip" data-cat="Home">Home</span>
+    <span class="chip" data-cat="Sports">Sports</span>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- ═══════ Inventory Panel ═══════ -->
+<div class="panel" id="panel-inventory">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div class="section-label" style="margin-bottom:0">Warehouse Stock Levels</div>
+    <button class="btn btn-outline btn-sm" id="refreshInventoryBtn">↻ Refresh</button>
+  </div>
+  <div class="inv-controls">
+    <label>SKU:</label>
+    <select id="skuSelect"><option value="">Select a SKU...</option></select>
+  </div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <table>
+      <thead><tr><th>Warehouse</th><th>Stock</th><th>Reorder Threshold</th><th>Status</th><th>Adjust</th></tr></thead>
+      <tbody id="invBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════ Orders Panel ═══════ -->
+<div class="panel" id="panel-orders">
+  <div class="orders-layout">
+    <div class="order-form card">
+      <h3>Place Order</h3>
+      <div class="prod-list" id="orderProdList"></div>
+      <button class="btn btn-primary" style="width:100%" id="placeOrderBtn">Place Order</button>
+    </div>
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="section-label" style="margin-bottom:0">Recent Orders</div>
+        <button class="btn btn-outline btn-sm" id="refreshOrdersBtn">↻ Refresh</button>
+      </div>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <table>
+          <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Replication Panel ═══════ -->
+<div class="panel" id="panel-replication">
+  <div class="section-label">Database Topology</div>
+  <div class="repl-cards">
+    <div class="repl-card primary" id="card-primary">
+      <div>
+        <div class="icon">☁️</div>
+        <div class="label">Global Database</div>
+        <div class="sublabel">PRIMARY</div>
+      </div>
+      <div>
+        <div class="status-text"><span class="status-dot" style="background:var(--azure)"></span><span id="primaryStatus">HEALTHY</span></div>
+        <div class="lag">lag: <span id="primaryLag">0</span>ms</div>
+        <div class="port" id="primaryHost">cosmos.azure.com</div>
+      </div>
+    </div>
+    <div class="repl-card offline" id="card-hq">
+      <div>
+        <div class="icon">🏢</div>
+        <div class="label">Seattle Store</div>
+        <div class="sublabel">OSS DocumentDB · REPLICA</div>
+      </div>
+      <div>
+        <div class="status-text"><span class="status-dot" id="hqDot" style="background:#555"></span><span id="hqStatus">OFFLINE</span></div>
+        <div class="lag" id="hqLagRow" style="display:none">lag: <span id="hqLag">0</span>ms</div>
+        <div class="port">port :10261</div>
+        <button class="btn btn-primary btn-sm" id="connectHq">▶ Connect</button>
+        <div class="progress-log" id="logHq"></div>
+      </div>
+    </div>
+    <div class="repl-card offline" id="card-warehouse">
+      <div>
+        <div class="icon">🏭</div>
+        <div class="label">Chicago Store</div>
+        <div class="sublabel">OSS DocumentDB · REPLICA</div>
+      </div>
+      <div>
+        <div class="status-text"><span class="status-dot" id="whDot" style="background:#555"></span><span id="whStatus">OFFLINE</span></div>
+        <div class="lag" id="whLagRow" style="display:none">lag: <span id="whLag">0</span>ms</div>
+        <div class="port">port :10262</div>
+        <button class="btn btn-primary btn-sm" id="connectWh">▶ Connect</button>
+        <div class="progress-log" id="logWh"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="repl-footer">
+    <div class="consistency">Consistency: <strong>STRONG</strong></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" id="writeTestBtn">⚡ Run Write Test</button>
+      <button class="btn btn-danger" id="resetBtn">Reset Demo</button>
+    </div>
+  </div>
+
+  <div class="timeline" id="timeline">
+    <div class="timeline-bar">
+      <div class="tl-node" id="tl0"><div class="tl-label">Write sent</div></div>
+      <div class="tl-segment" id="tls0"></div>
+      <div class="tl-node" id="tl1"><div class="tl-label" id="tlLabel1">Azure ACK</div></div>
+      <div class="tl-segment" id="tls1"></div>
+      <div class="tl-node" id="tl2"><div class="tl-label" id="tlLabel2">Replica ACK</div></div>
+      <div class="tl-segment" id="tls2"></div>
+      <div class="tl-node" id="tl3"><div class="tl-label">✓ Committed</div></div>
+    </div>
+    <div class="note">In production: Azure ~5ms, on-prem replica ~40-80ms over VPN</div>
+  </div>
+</div>
+
+<!-- ═══════ Drawer ═══════ -->
+<div class="drawer-overlay" id="drawerOverlay">
+  <div class="drawer">
+    <button class="drawer-close" id="drawerClose">&times;</button>
+    <h3 id="drawerTitle">Similar Products</h3>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px" id="drawerSub"></p>
+    <div class="rec-scroll" id="recScroll"></div>
+  </div>
+</div>
+
+<!-- ═══════ Terminal Log Panel ═══════ -->
+<div class="terminal-panel" id="terminalPanel">
+  <div class="terminal-header" id="terminalHeader">
+    <div class="terminal-title"><span class="term-dot"></span> ACTIVITY LOG</div>
+    <button class="terminal-toggle" id="terminalToggle">▼</button>
+  </div>
+  <div class="terminal-body" id="terminalBody"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+
+/* ── State ── */
+let currentTab = 'products';
+let currentCategory = '';
+let currentPage = 0;
+const PAGE_SIZE = 12;
+let allProducts = [];
+
+/* ── Health Polling ── */
+async function pollHealth() {
+  try {
+    const r = await fetch('/health');
+    const d = await r.json();
+    const badge = $('connBadge');
+    const key = d.dbTarget || 'azure';
+    const label = d.dbLabel || d.dbTarget;
+    if (key === 'azure') {
+      badge.className = 'conn-badge azure';
+    } else {
+      badge.className = 'conn-badge local';
+    }
+    $('connLabel').textContent = label;
+    $('connLatency').textContent = d.latencyMs + 'ms';
+    // Sync dropdown
+    if ($('dbTargetSelect').value !== key) $('dbTargetSelect').value = key;
+  } catch { /* silent */ }
+}
+pollHealth();
+setInterval(pollHealth, 3000);
+
+/* ── DB Target Switcher ── */
+$('dbTargetSelect').addEventListener('change', async () => {
+  const target = $('dbTargetSelect').value;
+  const indicator = $('switchingIndicator');
+  indicator.classList.add('visible');
+  $('dbTargetSelect').disabled = true;
+  try {
+    const r = await fetch('/db-target', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target })
+    });
+    if (!r.ok) {
+      const d = await r.json().catch(() => ({}));
+      appendLog('❌ ' + (d.error || 'Switch failed'), 'error');
+    }
+    await pollHealth();
+    loadProducts();
+  } catch (err) {
+    appendLog('❌ Switch failed: ' + err.message, 'error');
+  } finally {
+    indicator.classList.remove('visible');
+    $('dbTargetSelect').disabled = false;
+  }
+});
+
+/* ── Terminal Log Panel ── */
+function appendLog(text, type) {
+  const body = $('terminalBody');
+  const line = document.createElement('div');
+  line.className = 'log-line' + (type ? ' ' + type : '');
+  line.textContent = typeof text === 'string' ? text : JSON.stringify(text);
+  body.appendChild(line);
+  body.scrollTop = body.scrollHeight;
+  // Keep max 500 lines
+  while (body.children.length > 500) body.removeChild(body.firstChild);
+}
+
+// SSE log stream
+(function connectLogStream() {
+  const es = new EventSource('/logs');
+  es.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      const type = msg.includes('❌') || msg.includes('Error') ? 'error'
+                 : msg.includes('⚠') ? 'warn'
+                 : msg.includes('✅') || msg.includes('🚀') ? 'info' : '';
+      appendLog(msg, type);
+    } catch { appendLog(e.data); }
+  };
+  es.onerror = () => {
+    appendLog('[disconnected] Reconnecting...', 'warn');
+    es.close();
+    setTimeout(connectLogStream, 3000);
+  };
+})();
+
+$('terminalHeader').addEventListener('click', () => {
+  const panel = $('terminalPanel');
+  panel.classList.toggle('collapsed');
+  $('terminalToggle').textContent = panel.classList.contains('collapsed') ? '▲' : '▼';
+});
+
+/* ── Sync Now Button ── */
+$('syncNowBtn').addEventListener('click', async () => {
+  const btn = $('syncNowBtn');
+  btn.disabled = true;
+  btn.classList.add('syncing');
+  btn.textContent = '⏳ Syncing...';
+  try {
+    const r = await fetch('/sync', { method: 'POST' });
+    const d = await r.json();
+    if (r.ok) {
+      btn.textContent = `✅ ${d.synced} synced`;
+      if (d.syncedOrders && d.syncedOrders.length > 0) {
+        showSyncResults(d.syncedOrders, d.totalAzure);
+      }
+      setTimeout(() => { btn.textContent = '🔄 Sync to Global'; }, 3000);
+    } else {
+      btn.textContent = '❌ Failed';
+      setTimeout(() => { btn.textContent = '🔄 Sync to Global'; }, 3000);
+    }
+  } catch {
+    btn.textContent = '❌ Failed';
+    setTimeout(() => { btn.textContent = '🔄 Sync to Global'; }, 3000);
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('syncing');
+  }
+});
+
+function showSyncResults(orders, totalAzure) {
+  const existing = document.querySelector('.sync-results-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'sync-results-overlay';
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+  const rows = orders.map(o => {
+    const shortId = o.id.slice(-8);
+    return `<tr>
+      <td title="${esc(o.id)}">…${esc(shortId)}</td>
+      <td>${esc(o.customerId)}</td>
+      <td>${esc(o.store)}</td>
+      <td>$${Number(o.totalAmount).toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+
+  overlay.innerHTML = `
+    <div class="sync-results-panel">
+      <div class="sync-results-header">
+        <h3>✅ ${orders.length} Orders Synced to Azure</h3>
+        <button class="sync-results-close" onclick="this.closest('.sync-results-overlay').remove()">✕</button>
+      </div>
+      <div class="sync-results-body">
+        <table>
+          <thead><tr><th>ID</th><th>Customer</th><th>Source</th><th>Amount</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <div class="sync-results-summary">${totalAzure} total orders in Azure DocumentDB</div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+/* ── Pull from Azure Button ── */
+$('syncFromAzureBtn').addEventListener('click', async () => {
+  const btn = $('syncFromAzureBtn');
+  btn.disabled = true;
+  btn.classList.add('syncing');
+  btn.textContent = '⏳ Pulling...';
+  try {
+    const r = await fetch('/sync-from-azure', { method: 'POST' });
+    const d = await r.json();
+    if (r.ok) {
+      btn.textContent = `✅ ${d.ordersSynced} orders + ${d.invSynced} inv`;
+      setTimeout(() => { btn.textContent = '⬇️ Pull from Global'; }, 3000);
+    } else {
+      btn.textContent = '❌ Failed';
+      setTimeout(() => { btn.textContent = '⬇️ Pull from Global'; }, 3000);
+    }
+  } catch {
+    btn.textContent = '❌ Failed';
+    setTimeout(() => { btn.textContent = '⬇️ Pull from Global'; }, 3000);
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove('syncing');
+  }
+});
+
+/* ── Disaster Mode Button ── */
+let disasterActive = false;
+$('disasterBtn').addEventListener('click', async () => {
+  const btn = $('disasterBtn');
+  btn.disabled = true;
+  const newState = !disasterActive;
+  try {
+    const r = await fetch('/disaster', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ active: newState })
+    });
+    const d = await r.json();
+    disasterActive = d.active;
+    updateDisasterUI();
+  } catch { /* silent */ }
+  btn.disabled = false;
+});
+
+function updateDisasterUI() {
+  const btn = $('disasterBtn');
+  const status = $('syncStatus');
+  if (disasterActive) {
+    btn.classList.add('active');
+    btn.textContent = '🔴 Outage Active — Click to Restore';
+    status.innerHTML = '<span class="dot-off"></span> Sync paused <span class="pending-badge" id="pendingBadge">0 pending</span>';
+    pollPending();
+  } else {
+    btn.classList.remove('active');
+    btn.textContent = '⚡ Simulate Outage';
+    status.innerHTML = '<span class="dot-live"></span> Live sync';
+  }
+}
+
+let pendingInterval = null;
+function pollPending() {
+  if (pendingInterval) clearInterval(pendingInterval);
+  if (!disasterActive) return;
+  pendingInterval = setInterval(async () => {
+    try {
+      const r = await fetch('/disaster');
+      const d = await r.json();
+      const badge = document.getElementById('pendingBadge');
+      if (badge) badge.textContent = d.pending + ' pending';
+      if (!d.active) {
+        disasterActive = false;
+        updateDisasterUI();
+        clearInterval(pendingInterval);
+      }
+    } catch { /* silent */ }
+  }, 2000);
+}
+
+// Check initial disaster state
+(async () => {
+  try {
+    const r = await fetch('/disaster');
+    const d = await r.json();
+    disasterActive = d.active;
+    updateDisasterUI();
+  } catch { /* silent */ }
+})();
+
+/* ── Refresh Orders Button ── */
+$('refreshOrdersBtn').addEventListener('click', () => {
+  loadOrders();
+});
+
+/* ── Refresh Inventory Button ── */
+$('refreshInventoryBtn').addEventListener('click', () => {
+  loadSkus();
+  loadInventory();
+});
+
+/* ── Tabs ── */
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const id = t.dataset.tab;
+    $('panel-' + id).classList.add('active');
+    currentTab = id;
+    if (id === 'inventory') loadSkus();
+    if (id === 'orders') { loadOrderProducts(); loadOrders(); }
+    if (id === 'replication') pollReplication();
+  });
+});
+
+/* ═══════ PRODUCTS ═══════ */
+async function loadProducts() {
+  const grid = $('productGrid');
+  grid.innerHTML = '<div class="loading">Loading products...</div>';
+  try {
+    const params = new URLSearchParams({ limit: String(PAGE_SIZE), offset: String(currentPage * PAGE_SIZE) });
+    if (currentCategory) params.set('category', currentCategory);
+    const r = await fetch('/products?' + params);
+    const d = await r.json();
+    allProducts = d.products || [];
+    renderProducts(d.products, d.total);
+  } catch { grid.innerHTML = '<div class="empty">Failed to load products</div>'; }
+}
+
+async function searchProducts() {
+  const q = $('searchInput').value.trim();
+  if (!q) { loadProducts(); return; }
+  const grid = $('productGrid');
+  grid.innerHTML = '<div class="loading">Searching...</div>';
+  try {
+    const r = await fetch('/products/search?q=' + encodeURIComponent(q));
+    const d = await r.json();
+    renderProducts(d.results, d.results.length);
+    $('pagination').innerHTML = '';
+  } catch { grid.innerHTML = '<div class="empty">Search failed</div>'; }
+}
+
+function renderProducts(products, total) {
+  const grid = $('productGrid');
+  if (!products.length) { grid.innerHTML = '<div class="empty">No products found</div>'; return; }
+  grid.innerHTML = products.map(p => `
+    <div class="card product-card" data-id="${p._id}">
+      <span class="badge ${esc(p.category)}">${esc(p.category)}</span>
+      <div class="name">${esc(p.name)}</div>
+      <div class="desc">${esc(p.description)}</div>
+      <div class="price">$${Number(p.price).toFixed(2)}</div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.product-card').forEach(c => {
+    c.addEventListener('click', () => openDrawer(c.dataset.id, products.find(p => p._id === c.dataset.id)));
+  });
+
+  const pages = Math.ceil(total / PAGE_SIZE);
+  $('pagination').innerHTML = pages > 1 ? Array.from({length:pages},(_,i)=>
+    `<button class="btn btn-sm ${i===currentPage?'btn-primary':''}" data-page="${i}">${i+1}</button>`
+  ).join('') : '';
+  $('pagination').querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => { currentPage = +b.dataset.page; loadProducts(); });
+  });
+}
+
+$('searchBtn').addEventListener('click', searchProducts);
+$('searchInput').addEventListener('keydown', e => { if(e.key==='Enter') searchProducts(); });
+
+let searchTimer;
+$('searchInput').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    if (!$('searchInput').value.trim()) loadProducts();
+  }, 300);
+});
+
+document.querySelectorAll('#categoryChips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#categoryChips .chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    currentCategory = c.dataset.cat;
+    currentPage = 0;
+    $('searchInput').value = '';
+    loadProducts();
+  });
+});
+
+async function openDrawer(productId, product) {
+  $('drawerTitle').textContent = 'Similar Products';
+  $('drawerSub').textContent = product ? 'Based on: ' + product.name : '';
+  $('recScroll').innerHTML = '<div class="loading">Finding recommendations...</div>';
+  $('drawerOverlay').classList.add('open');
+  try {
+    const r = await fetch('/recommendations?productId=' + productId);
+    const d = await r.json();
+    if (!d.results.length) { $('recScroll').innerHTML = '<div class="empty">No recommendations</div>'; return; }
+    $('recScroll').innerHTML = d.results.map(p => `
+      <div class="rec-chip">
+        <div class="sim">${(p.similarityScore * 100).toFixed(1)}% match</div>
+        <div style="font-weight:600;margin:4px 0">${esc(p.name)}</div>
+        <div style="color:var(--text-dim)">${esc(p.category)}</div>
+        <div style="color:var(--green);font-weight:600">$${Number(p.price).toFixed(2)}</div>
+      </div>
+    `).join('');
+  } catch { $('recScroll').innerHTML = '<div class="empty">Failed to load recommendations</div>'; }
+}
+
+$('drawerClose').addEventListener('click', () => $('drawerOverlay').classList.remove('open'));
+$('drawerOverlay').addEventListener('click', e => { if(e.target === $('drawerOverlay')) $('drawerOverlay').classList.remove('open'); });
+
+loadProducts();
+
+/* ═══════ INVENTORY ═══════ */
+async function loadSkus() {
+  try {
+    const r = await fetch('/products?limit=100&offset=0');
+    const d = await r.json();
+    const sel = $('skuSelect');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Select a SKU...</option>' +
+      (d.products || []).map(p => `<option value="${esc(p.sku)}">${esc(p.sku)} — ${esc(p.name)}</option>`).join('');
+    if (cur) sel.value = cur;
+  } catch { /* silent */ }
+}
+
+$('skuSelect').addEventListener('change', loadInventory);
+
+async function loadInventory() {
+  const sku = $('skuSelect').value;
+  const body = $('invBody');
+  if (!sku) { body.innerHTML = ''; return; }
+  try {
+    const r = await fetch('/inventory/' + encodeURIComponent(sku));
+    const records = await r.json();
+    body.innerHTML = records.map(rec => {
+      const ok = rec.quantityOnHand > rec.reorderThreshold;
+      return `<tr>
+        <td>${esc(rec.warehouseId)}</td>
+        <td>${rec.quantityOnHand}</td>
+        <td>${rec.reorderThreshold}</td>
+        <td><span class="${ok?'status-ok':'status-low'}">${ok?'OK':'LOW'}</span></td>
+        <td>
+          <button class="adj-btn" data-sku="${esc(rec.sku)}" data-wh="${esc(rec.warehouseId)}" data-delta="-1">−</button>
+          <button class="adj-btn" data-sku="${esc(rec.sku)}" data-wh="${esc(rec.warehouseId)}" data-delta="1">+</button>
+        </td>
+      </tr>`;
+    }).join('');
+    body.querySelectorAll('.adj-btn').forEach(b => {
+      b.addEventListener('click', async () => {
+        await fetch('/inventory/' + encodeURIComponent(b.dataset.sku) + '/adjust', {
+          method:'PATCH', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ warehouseId: b.dataset.wh, delta: +b.dataset.delta })
+        });
+        loadInventory();
+      });
+    });
+  } catch { body.innerHTML = '<tr><td colspan="5" class="empty">Failed to load</td></tr>'; }
+}
+
+/* ═══════ ORDERS ═══════ */
+async function loadOrderProducts() {
+  try {
+    const r = await fetch('/products?limit=100&offset=0');
+    const d = await r.json();
+    $('orderProdList').innerHTML = (d.products || []).map(p => `
+      <div class="prod-item">
+        <input type="checkbox" value="${esc(p.sku)}" data-price="${p.price}" data-name="${esc(p.name)}">
+        <span>${esc(p.name)} <span style="color:var(--text-dim)">($${Number(p.price).toFixed(2)})</span></span>
+      </div>
+    `).join('');
+  } catch { /* silent */ }
+}
+
+$('placeOrderBtn').addEventListener('click', async () => {
+  const checked = [...$('orderProdList').querySelectorAll('input:checked')];
+  if (!checked.length) return;
+  const items = checked.map(c => ({ sku: c.value, quantity: 1, unitPrice: +c.dataset.price }));
+  try {
+    await fetch('/orders', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        customerId: 'CUST-DEMO',
+        items,
+        shippingAddress: { city:'Seattle', state:'WA', zip:'98101' }
+      })
+    });
+    checked.forEach(c => c.checked = false);
+    loadOrders();
+  } catch { /* silent */ }
+});
+
+async function loadOrders() {
+  try {
+    const r = await fetch('/orders?limit=20');
+    if (!r.ok) return;
+    const d = await r.json();
+    const orders = d.orders || [];
+    if (orders.length === 0) {
+      $('ordersBody').innerHTML = '<tr><td colspan="5" class="empty">No orders yet — place one above</td></tr>';
+      return;
+    }
+    $('ordersBody').innerHTML = orders.map(o => {
+      const shortId = o._id.slice(-8);
+      const itemCount = o.items ? o.items.length : 0;
+      const total = Number(o.totalAmount).toFixed(2);
+      const status = o.status || 'pending';
+      return `<tr>
+        <td style="font-family:var(--mono);font-size:12px">…${esc(shortId)}</td>
+        <td>${esc(o.customerId)}</td>
+        <td>${itemCount}</td>
+        <td style="font-family:var(--mono)">$${total}</td>
+        <td><span class="badge status-badge ${status}">${status}</span></td>
+      </tr>`;
+    }).join('');
+  } catch { $('ordersBody').innerHTML = '<tr><td colspan="5" class="empty">Failed to load orders</td></tr>'; }
+}
+
+async function fetchRecentOrders() {
+  // Poll recent orders periodically
+  loadOrders();
+}
+
+/* ═══════ REPLICATION ═══════ */
+let replInterval;
+
+function updateReplicationUI(state) {
+  // Primary
+  $('primaryStatus').textContent = state.primary.status.toUpperCase();
+  $('primaryLag').textContent = state.primary.lagMs;
+  if (state.primary.host) $('primaryHost').textContent = state.primary.host;
+
+  // HQ
+  const hq = state.replicas[0];
+  updateReplicaCard('hq', hq, 'card-hq', 'hqDot', 'hqStatus', 'hqLag', 'hqLagRow', 'connectHq');
+
+  // Warehouse
+  const wh = state.replicas[1];
+  updateReplicaCard('warehouse', wh, 'card-warehouse', 'whDot', 'whStatus', 'whLag', 'whLagRow', 'connectWh');
+}
+
+function updateReplicaCard(target, node, cardId, dotId, statusId, lagId, lagRowId, btnId) {
+  const card = $(cardId);
+  card.className = 'repl-card ' + node.status;
+  $(dotId).style.background = node.status === 'connected' ? 'var(--green)' :
+    node.status === 'pending' ? 'var(--amber)' : '#555';
+  $(statusId).textContent = node.status.toUpperCase();
+  $(lagId).textContent = node.lagMs;
+  $(lagRowId).style.display = node.status === 'connected' ? '' : 'none';
+  $(btnId).style.display = node.status === 'offline' ? '' : 'none';
+}
+
+async function pollReplication() {
+  try {
+    const r = await fetch('/replication/status');
+    const state = await r.json();
+    updateReplicationUI(state);
+  } catch { /* silent */ }
+}
+
+function startReplPolling() {
+  if (replInterval) clearInterval(replInterval);
+  replInterval = setInterval(pollReplication, 2000);
+}
+
+function connectReplica(target) {
+  const logEl = target === 'hq' ? $('logHq') : $('logWh');
+  const btnEl = target === 'hq' ? $('connectHq') : $('connectWh');
+  btnEl.style.display = 'none';
+  logEl.className = 'progress-log visible';
+  logEl.innerHTML = '';
+
+  const es = new EventSource('/replication/enable?' + new URLSearchParams({}));
+
+  // Use fetch with POST + SSE via eventsource is tricky — use fetch instead
+  fetch('/replication/enable', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ target })
+  }).then(async response => {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const msg = line.slice(6);
+          const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
+          logEl.innerHTML += `[${ts}] ${esc(msg)}\n`;
+          logEl.scrollTop = logEl.scrollHeight;
+          if (msg === 'DONE') {
+            pollReplication();
+            startReplPolling();
+          }
+        }
+      }
+    }
+  }).catch(() => {
+    logEl.innerHTML += '[error] Connection failed\n';
+  });
+
+  es.close(); // We don't actually use EventSource, clean up
+}
+
+$('connectHq').addEventListener('click', () => connectReplica('hq'));
+$('connectWh').addEventListener('click', () => connectReplica('warehouse'));
+
+$('writeTestBtn').addEventListener('click', async () => {
+  const tl = $('timeline');
+  tl.classList.add('visible');
+  // Reset
+  ['tl0','tl1','tl2','tl3'].forEach(id => { $(id).className = 'tl-node'; });
+  ['tls0','tls1','tls2'].forEach(id => { $(id).className = 'tl-segment'; });
+
+  $(  'tl0').classList.add('active');
+  await sleep(300);
+  $('tls0').classList.add('active');
+
+  try {
+    const r = await fetch('/replication/write-test', { method:'POST' });
+    const d = await r.json();
+
+    $('tlLabel1').textContent = `Azure ACK: ${d.primaryAckMs}ms`;
+    $('tl1').classList.add('active');
+    await sleep(400);
+    $('tls1').classList.add('active');
+
+    $('tlLabel2').textContent = `Replica ACK: ${d.replicaAckMs}ms`;
+    $('tl2').classList.add('active');
+    await sleep(400);
+    $('tls2').classList.add('active');
+
+    $('tl3').classList.add('done');
+    $('tl0').classList.add('done');
+    $('tl1').classList.add('done');
+    $('tl2').classList.add('done');
+
+    setTimeout(() => { tl.classList.remove('visible'); }, 4000);
+  } catch {
+    $('tl1').style.background = 'var(--red)';
+  }
+});
+
+$('resetBtn').addEventListener('click', async () => {
+  $('resetBtn').disabled = true;
+  $('resetBtn').textContent = 'Resetting...';
+  try {
+    await fetch('/replication/reset', { method:'POST' });
+    $('logHq').innerHTML = ''; $('logHq').className = 'progress-log';
+    $('logWh').innerHTML = ''; $('logWh').className = 'progress-log';
+    $('timeline').classList.remove('visible');
+    pollReplication();
+  } finally {
+    $('resetBtn').disabled = false;
+    $('resetBtn').textContent = '🔄 Reset Demo';
+  }
+});
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Start replication polling when tab becomes active
+startReplPolling();
+</script>
+</body>
+</html>
