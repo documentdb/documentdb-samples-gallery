@@ -32,11 +32,11 @@ HTTP clients          WebSocket clients
 ## 1. Start DocumentDB locally
 
 ```bash
-docker run -dt \
+docker run -dt --pull always \
   -p 10260:10260 \
   -e USERNAME=<username> \
   -e PASSWORD=<password> \
-  ghcr.io/microsoft/documentdb/documentdb-local:latest
+  ghcr.io/documentdb/documentdb/documentdb-local:latest
 ```
 
 Wait ~10 seconds for the container to finish initialising before running the app.

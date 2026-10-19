@@ -71,11 +71,11 @@ You can interact via:
 This gives you a full MongoDB-compatible endpoint with no build step.
 
 ```bash
-docker run -dt \
+docker run -dt --pull always \
   -p 10260:10260 \
   -e USERNAME=<username> \
   -e PASSWORD=<password> \
-  ghcr.io/microsoft/documentdb/documentdb-local:latest
+  ghcr.io/documentdb/documentdb/documentdb-local:latest
 ```
 
 Connect with mongosh:
@@ -88,33 +88,34 @@ mongosh localhost:10260 \
   --tlsAllowInvalidCertificates
 ```
 
-### Option B — Prebuilt Docker Image (PostgreSQL/psql access only)
+### Option B — Prebuilt Docker Image (PostgreSQL/psql access)
+
+The Option A image also runs PostgreSQL on port `9712`. Shell into it with psql:
 
 ```bash
-# Pull image (Ubuntu 22.04, PostgreSQL 16, AMD64, version 0.103.0)
-docker pull mcr.microsoft.com/cosmosdb/ubuntu/documentdb-oss:22.04-PG16-AMD64-0.103.0
+docker run -dt --pull always --name documentdb \
+  -e USERNAME=<username> \
+  -e PASSWORD=<password> \
+  ghcr.io/documentdb/documentdb/documentdb-local:latest
 
-# Run container
-docker run -dt mcr.microsoft.com/cosmosdb/ubuntu/documentdb-oss:22.04-PG16-AMD64-0.103.0
-
-# Shell into container
-docker exec -it <container-id> bash
-
-# Connect to psql
-psql -p 9712 -d postgres
+docker exec -it documentdb psql -p 9712 -d postgres
 ```
 
 For external access (exposes port to host):
 
 ```bash
-docker run -p 127.0.0.1:9712:9712 -dt \
-  mcr.microsoft.com/cosmosdb/ubuntu/documentdb-oss:22.04-PG16-AMD64-0.103.0 -e
+docker run -dt --pull always \
+  -p 127.0.0.1:9712:9712 \
+  -e USERNAME=<username> \
+  -e PASSWORD=<password> \
+  -e ALLOW_EXTERNAL_CONNECTIONS=true \
+  ghcr.io/documentdb/documentdb/documentdb-local:latest
 ```
 
-External psql connection:
+External psql connection (password is `<password>`):
 
 ```bash
-psql -h localhost --port 9712 -d postgres -U documentdb
+psql -h localhost --port 9712 -d postgres -U <username>
 ```
 
 ### Option C — Build from Source (Ubuntu/Debian)

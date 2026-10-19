@@ -1,6 +1,7 @@
 services:
   onprem-hq:
-    image: ghcr.io/microsoft/documentdb/documentdb-local:latest
+    image: ghcr.io/documentdb/documentdb/documentdb-local:latest
+    pull_policy: always
     container_name: docdb-onprem-hq
     ports:
       - "10261:10260"
@@ -12,7 +13,8 @@ services:
     restart: unless-stopped
 
   onprem-warehouse:
-    image: ghcr.io/microsoft/documentdb/documentdb-local:latest
+    image: ghcr.io/documentdb/documentdb/documentdb-local:latest
+    pull_policy: always
     container_name: docdb-onprem-warehouse
     ports:
       - "10262:10260"

@@ -69,11 +69,11 @@ testsample/
 Run DocumentDB locally using Docker. The image exposes a MongoDB-compatible gateway on port `10260`.
 
 ```bash
-docker run -dt \
+docker run -dt --pull always \
   -p 10260:10260 \
   -e USERNAME=<your-username> \
   -e PASSWORD=<your-password> \
-  ghcr.io/microsoft/documentdb/documentdb-local:latest
+  ghcr.io/documentdb/documentdb/documentdb-local:latest
 ```
 
 > The container creates the user on first boot. Wait a few seconds after starting before connecting.

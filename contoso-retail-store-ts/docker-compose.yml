@@ -1,6 +1,7 @@
 services:
   documentdb:
-    image: ghcr.io/microsoft/documentdb/documentdb-local:latest
+    image: ghcr.io/documentdb/documentdb/documentdb-local:latest
+    pull_policy: always
     container_name: docdb-azure-primary
     ports:
       - "10260:10260"

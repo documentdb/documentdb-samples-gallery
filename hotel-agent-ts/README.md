@@ -109,20 +109,20 @@ ollama pull nomic-embed-text  # embedding model (768 dimensions)
 
 **macOS / Linux / Git Bash:**
 ```bash
-docker run -dt \
+docker run -dt --pull always \
   -p 10260:10260 \
   -e USERNAME=docdbuser \
   -e PASSWORD=Admin100! \
-  ghcr.io/microsoft/documentdb/documentdb-local:latest
+  ghcr.io/documentdb/documentdb/documentdb-local:latest
 ```
 
 **Windows PowerShell:**
 ```powershell
-docker run -dt `
+docker run -dt --pull always `
   -p 10260:10260 `
   -e USERNAME=docdbuser `
   -e PASSWORD=Admin100! `
-  ghcr.io/microsoft/documentdb/documentdb-local:latest
+  ghcr.io/documentdb/documentdb/documentdb-local:latest
 ```
 
 ### 2. Install dependencies
